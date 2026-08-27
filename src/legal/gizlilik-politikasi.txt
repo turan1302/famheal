@@ -44,7 +44,7 @@ Ayarlar içindeki JSON dışa aktarma, yedeği sizin seçtiğiniz bir uygulamaya
 
 7. SAKLAMA VE SİLME
 
-Kayıtlar, siz silene dek cihazda kalır. Tek bir ödev, seans türü veya ilgili kayıt uygulamadan silinebilir. Uygulamayı cihazdan kaldırmak, cihazda tutulan FamHeal verilerinin de silinmesine yol açar. Yeniden yüklemeden önce JSON yedeği alırsanız kayıtları içe aktararak geri yükleyebilirsiniz.
+Kayıtlar, siz silene dek cihazda kalır. Tek bir danışan, seans, ödev, seans türü, seans süresi veya ilgili kayıt uygulamadan silinebilir. Danışan silindiğinde o kişiye bağlı seans ve ödev kayıtları da kalkar. Seans silindiğinde bağlı ödevler danışanda kalır. Seans türü veya süresi silindiğinde mevcut kayıtlar seçilen değere aktarılır; son tür veya süre silinemez. Uygulamayı cihazdan kaldırmak, cihazda tutulan FamHeal verilerinin de silinmesine yol açar. Yeniden yüklemeden önce JSON yedeği alırsanız kayıtları içe aktararak geri yükleyebilirsiniz.
 
 8. GÜVENLİK
 

@@ -20,6 +20,7 @@ const SessionDetail = () => {
   const sessions = useAppStore(state => state.sessions);
   const homework = useAppStore(state => state.homework);
   const setSessionStatus = useAppStore(state => state.setSessionStatus);
+  const deleteSession = useAppStore(state => state.deleteSession);
 
   const session = useMemo(() => {
     const found = sessions.find(item => item.id === sessionId);
@@ -34,6 +35,7 @@ const SessionDetail = () => {
   const [cancelReason, setCancelReason] = useState(
     session?.cancelReason || '',
   );
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     setCancelReason(session?.cancelReason || '');
@@ -77,6 +79,20 @@ const SessionDetail = () => {
       status: 'cancelled',
       cancelReason,
     });
+  };
+
+  const onDelete = () => {
+    const result = deleteSession(session.id);
+    if (result.ok) {
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Seans silindi',
+        textBody: result.homeworkCount
+          ? `${session.name} · ${result.homeworkCount} ödev danışanda kaldı`
+          : `${session.name} · ${session.type}`,
+      });
+      navigation.goBack();
+    }
   };
 
   return (
@@ -196,6 +212,55 @@ const SessionDetail = () => {
           </Pressable>
         ))
       )}
+
+      {confirmDelete ? (
+        <View style={[styles.notice, { backgroundColor: colors.dangerSoft }]}>
+          <Text style={[styles.noticeTitle, { color: colors.cardText }]}>
+            Bu seans silinsin mi?
+          </Text>
+          <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
+            {`Seans kaydı kaldırılacak.${
+              sessionHomework.length
+                ? ` ${sessionHomework.length} ödev danışanda kalır.`
+                : ''
+            } Bu işlem geri alınamaz.`}
+          </Text>
+          <View style={styles.noticeActions}>
+            <Pressable
+              onPress={() => setConfirmDelete(false)}
+              style={[styles.sideBtn, { backgroundColor: colors.card }]}
+            >
+              <Text style={[styles.sideText, { color: colors.cardText }]}>
+                Vazgeç
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={onDelete}
+              style={[
+                styles.sideBtn,
+                styles.flexBtn,
+                { backgroundColor: colors.danger },
+              ]}
+            >
+              <Text style={[styles.sideText, { color: colors.quickPrimaryText }]}>
+                Sil
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : (
+        <Pressable
+          onPress={() => setConfirmDelete(true)}
+          style={({ pressed }) => [
+            styles.deleteBtn,
+            { opacity: pressed ? 0.88 : 1 },
+          ]}
+        >
+          <Text style={[styles.deleteText, { color: colors.danger }]}>
+            Seansı sil
+          </Text>
+        </Pressable>
+      )}
     </ThemedScreen>
   );
 };
@@ -279,6 +344,49 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
+  },
+  deleteBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  deleteText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  notice: {
+    borderRadius: 18,
+    padding: 16,
+    marginTop: 16,
+  },
+  noticeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  noticeBody: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  noticeActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  sideBtn: {
+    height: 44,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flexBtn: {
+    flex: 1,
+  },
+  sideText: {
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
 

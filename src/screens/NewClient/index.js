@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
@@ -15,6 +15,9 @@ const NewClient = () => {
   const sessionTypes = useAppStore(state => state.sessionTypes);
   const addClient = useAppStore(state => state.addClient);
   const updateClient = useAppStore(state => state.updateClient);
+  const deleteClient = useAppStore(state => state.deleteClient);
+  const sessions = useAppStore(state => state.sessions);
+  const homework = useAppStore(state => state.homework);
   const existing = useMemo(
     () => clients.find(item => item.id === clientId),
     [clientId, clients],
@@ -25,6 +28,28 @@ const NewClient = () => {
     existing?.type ?? sessionTypes[0]?.name ?? '',
   );
   const [phone, setPhone] = useState(existing?.phone ?? '');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const relatedSessionsCount = useMemo(
+    () =>
+      existing
+        ? sessions.filter(item => item.clientId === existing.id).length
+        : 0,
+    [existing, sessions],
+  );
+  const relatedHomeworkCount = useMemo(() => {
+    if (!existing) {
+      return 0;
+    }
+    const sessionIds = new Set(
+      sessions
+        .filter(item => item.clientId === existing.id)
+        .map(item => item.id),
+    );
+    return homework.filter(
+      item => item.clientId === existing.id || sessionIds.has(item.sessionId),
+    ).length;
+  }, [existing, homework, sessions]);
 
   const onSave = () => {
     if (!name.trim()) {
@@ -57,8 +82,45 @@ const NewClient = () => {
         ? `${name.trim()} · ${phone.trim()}`
         : name.trim(),
     });
-    navigation.goBack();
+    if (!existing) {
+      navigation.goBack();
+    }
   };
+
+  const onDelete = () => {
+    if (!existing) {
+      return;
+    }
+    const result = deleteClient(existing.id);
+    if (result.ok) {
+      const extra = [];
+      if (result.sessionsCount) {
+        extra.push(`${result.sessionsCount} seans`);
+      }
+      if (result.homeworkCount) {
+        extra.push(`${result.homeworkCount} ödev`);
+      }
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Danışan silindi',
+        textBody: extra.length
+          ? `${existing.name} · ${extra.join(', ')}`
+          : existing.name,
+      });
+      navigation.goBack();
+    }
+  };
+
+  const relatedParts = [];
+  if (relatedSessionsCount) {
+    relatedParts.push(`${relatedSessionsCount} seans`);
+  }
+  if (relatedHomeworkCount) {
+    relatedParts.push(`${relatedHomeworkCount} ödev`);
+  }
+  const relatedText = relatedParts.length
+    ? ` Bu danışana ait ${relatedParts.join(' ve ')} kaydı da silinecek.`
+    : '';
 
   return (
     <ThemedScreen
@@ -133,6 +195,49 @@ const NewClient = () => {
           Kaydet
         </Text>
       </Pressable>
+
+      {existing ? (
+        confirmDelete ? (
+          <View style={[styles.notice, { backgroundColor: colors.dangerSoft }]}>
+            <Text style={[styles.noticeTitle, { color: colors.cardText }]}>
+              “{existing.name}” silinsin mi?
+            </Text>
+            <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
+              Danışan kaydı kaldırılacak.{relatedText} Bu işlem geri alınamaz.
+            </Text>
+            <View style={styles.noticeActions}>
+              <Pressable
+                onPress={() => setConfirmDelete(false)}
+                style={[styles.sideBtn, { backgroundColor: colors.card }]}
+              >
+                <Text style={[styles.sideText, { color: colors.cardText }]}>
+                  Vazgeç
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={onDelete}
+                style={[styles.sideBtn, styles.flexBtn, { backgroundColor: colors.danger }]}
+              >
+                <Text style={[styles.sideText, { color: colors.quickPrimaryText }]}>
+                  Sil
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <Pressable
+            onPress={() => setConfirmDelete(true)}
+            style={({ pressed }) => [
+              styles.deleteBtn,
+              { opacity: pressed ? 0.88 : 1 },
+            ]}
+          >
+            <Text style={[styles.deleteText, { color: colors.danger }]}>
+              Danışanı sil
+            </Text>
+          </Pressable>
+        )
+      ) : null}
     </ThemedScreen>
   );
 };
@@ -173,6 +278,49 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontWeight: '700',
+  },
+  deleteBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  deleteText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  notice: {
+    borderRadius: 18,
+    padding: 16,
+    marginTop: 12,
+  },
+  noticeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  noticeBody: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  noticeActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  sideBtn: {
+    height: 44,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flexBtn: {
+    flex: 1,
+  },
+  sideText: {
+    fontSize: 15,
     fontWeight: '700',
   },
 });

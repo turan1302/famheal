@@ -28,9 +28,18 @@ const NewSession = () => {
   const sessionDurations = useAppStore(state => state.sessionDurations);
   const addSession = useAppStore(state => state.addSession);
   const updateSession = useAppStore(state => state.updateSession);
+  const deleteSession = useAppStore(state => state.deleteSession);
+  const homework = useAppStore(state => state.homework);
   const existing = useMemo(
     () => sessions.find(item => item.id === sessionId),
     [sessionId, sessions],
+  );
+  const linkedHomeworkCount = useMemo(
+    () =>
+      existing
+        ? homework.filter(item => item.sessionId === existing.id).length
+        : 0,
+    [existing, homework],
   );
 
   const durationOptions = useMemo(() => {
@@ -58,6 +67,7 @@ const NewSession = () => {
   );
   const [pickerMode, setPickerMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const clientItems = useMemo(
     () =>
@@ -125,7 +135,36 @@ const NewSession = () => {
         ? 'Yaklaşan randevu için yerel hatırlatma kuruldu.'
         : 'Seans kaydedildi.',
     });
+    if (!existing) {
+      navigation.goBack();
+    }
+  };
+
+  const leaveAfterDelete = () => {
+    const navState = navigation.getState();
+    const prev = navState?.routes?.[navState.index - 1];
+    if (prev?.name === 'SessionDetail') {
+      navigation.pop(2);
+      return;
+    }
     navigation.goBack();
+  };
+
+  const onDelete = () => {
+    if (!existing) {
+      return;
+    }
+    const result = deleteSession(existing.id);
+    if (result.ok) {
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Seans silindi',
+        textBody: result.homeworkCount
+          ? `${existing.name} · ${result.homeworkCount} ödev danışanda kaldı`
+          : `${existing.name} · ${existing.type}`,
+      });
+      leaveAfterDelete();
+    }
   };
 
   return (
@@ -270,6 +309,57 @@ const NewSession = () => {
           Kaydet
         </Text>
       </Pressable>
+
+      {existing ? (
+        confirmDelete ? (
+          <View style={[styles.notice, { backgroundColor: colors.dangerSoft }]}>
+            <Text style={[styles.noticeTitle, { color: colors.cardText }]}>
+              Bu seans silinsin mi?
+            </Text>
+            <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
+            {`Seans kaydı kaldırılacak.${
+              linkedHomeworkCount
+                ? ` ${linkedHomeworkCount} ödev danışanda kalır.`
+                : ''
+            } Bu işlem geri alınamaz.`}
+            </Text>
+            <View style={styles.noticeActions}>
+              <Pressable
+                onPress={() => setConfirmDelete(false)}
+                style={[styles.sideBtn, { backgroundColor: colors.card }]}
+              >
+                <Text style={[styles.sideText, { color: colors.cardText }]}>
+                  Vazgeç
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={onDelete}
+                style={[
+                  styles.sideBtn,
+                  styles.flexBtn,
+                  { backgroundColor: colors.danger },
+                ]}
+              >
+                <Text style={[styles.sideText, { color: colors.quickPrimaryText }]}>
+                  Sil
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <Pressable
+            onPress={() => setConfirmDelete(true)}
+            style={({ pressed }) => [
+              styles.deleteBtn,
+              { opacity: pressed ? 0.88 : 1 },
+            ]}
+          >
+            <Text style={[styles.deleteText, { color: colors.danger }]}>
+              Seansı sil
+            </Text>
+          </Pressable>
+        )
+      ) : null}
     </ThemedScreen>
   );
 };
@@ -337,6 +427,49 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+    fontWeight: '700',
+  },
+  deleteBtn: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  deleteText: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  notice: {
+    borderRadius: 18,
+    padding: 16,
+    marginTop: 12,
+  },
+  noticeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  noticeBody: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  noticeActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  sideBtn: {
+    height: 44,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flexBtn: {
+    flex: 1,
+  },
+  sideText: {
+    fontSize: 15,
     fontWeight: '700',
   },
 });

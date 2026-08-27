@@ -17,6 +17,27 @@ import {
 
 const nextId = prefix => `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
+const sanitizeRelations = (clients = [], sessions = [], homework = []) => {
+  const clientList = Array.isArray(clients) ? clients : [];
+  const sessionList = Array.isArray(sessions) ? sessions : [];
+  const homeworkList = Array.isArray(homework) ? homework : [];
+  const clientIds = new Set(clientList.map(item => item.id));
+  const nextSessions = sessionList.filter(item => clientIds.has(item.clientId));
+  const sessionIds = new Set(nextSessions.map(item => item.id));
+  const nextHomework = homeworkList
+    .filter(item => clientIds.has(item.clientId))
+    .map(item =>
+      !item.sessionId || sessionIds.has(item.sessionId)
+        ? item
+        : { ...item, sessionId: '' },
+    );
+  return {
+    clients: clientList,
+    sessions: nextSessions,
+    homework: nextHomework,
+  };
+};
+
 const clientAccent = index => (index % 2 === 0 ? 'mint' : 'teal');
 
 export const useAppStore = create(
@@ -62,6 +83,39 @@ export const useAppStore = create(
             item.clientId === id ? { ...item, client: name } : item,
           ),
         }));
+      },
+
+      deleteClient: id => {
+        const current = get().clients.find(item => item.id === id);
+        if (!current) {
+          return { ok: false, reason: 'missing' };
+        }
+
+        const relatedSessions = get().sessions.filter(
+          item => item.clientId === id,
+        );
+        const sessionIds = new Set(relatedSessions.map(item => item.id));
+        const relatedHomework = get().homework.filter(
+          item => item.clientId === id || sessionIds.has(item.sessionId),
+        );
+
+        relatedSessions.forEach(item => cancelSessionReminder(item.id));
+        relatedHomework.forEach(item => cancelHomeworkReminder(item.id));
+
+        set(state => ({
+          clients: state.clients.filter(item => item.id !== id),
+          sessions: state.sessions.filter(item => item.clientId !== id),
+          homework: state.homework.filter(
+            item => item.clientId !== id && !sessionIds.has(item.sessionId),
+          ),
+        }));
+
+        return {
+          ok: true,
+          item: current,
+          sessionsCount: relatedSessions.length,
+          homeworkCount: relatedHomework.length,
+        };
       },
 
       addSession: payload => {
@@ -177,6 +231,26 @@ export const useAppStore = create(
           scheduleSessionReminder(session, get().notificationSettings);
         }
         return session;
+      },
+
+      deleteSession: id => {
+        const current = get().sessions.find(item => item.id === id);
+        if (!current) {
+          return { ok: false, reason: 'missing' };
+        }
+
+        const homeworkCount = get().homework.filter(
+          item => item.sessionId === id,
+        ).length;
+        cancelSessionReminder(id);
+        set(state => ({
+          sessions: state.sessions.filter(item => item.id !== id),
+          homework: state.homework.map(item =>
+            item.sessionId === id ? { ...item, sessionId: '' } : item,
+          ),
+        }));
+
+        return { ok: true, item: current, homeworkCount };
       },
 
       addHomework: payload => {
@@ -514,11 +588,16 @@ export const useAppStore = create(
             ? payload.sessionDurations
             : get().sessionDurations,
         );
+        const cleaned = sanitizeRelations(
+          payload.clients,
+          payload.sessions,
+          payload.homework,
+        );
 
         set({
-          clients: payload.clients,
-          sessions: payload.sessions,
-          homework: payload.homework,
+          clients: cleaned.clients,
+          sessions: cleaned.sessions,
+          homework: cleaned.homework,
           sessionTypes,
           sessionDurations,
           notificationSettings,
@@ -561,18 +640,28 @@ export const useAppStore = create(
         sessionDurations: state.sessionDurations,
         notificationSettings: state.notificationSettings,
       }),
-      merge: (persisted, current) => ({
-        ...current,
-        ...(persisted || {}),
-        sessionTypes:
-          persisted?.sessionTypes?.length > 0
-            ? persisted.sessionTypes
-            : current.sessionTypes,
-        sessionDurations: normalizeSessionDurations(persisted?.sessionDurations),
-        notificationSettings: resolveNotificationSettings(
-          persisted?.notificationSettings,
-        ),
-      }),
+      merge: (persisted, current) => {
+        const next = {
+          ...current,
+          ...(persisted || {}),
+          sessionTypes:
+            persisted?.sessionTypes?.length > 0
+              ? persisted.sessionTypes
+              : current.sessionTypes,
+          sessionDurations: normalizeSessionDurations(
+            persisted?.sessionDurations,
+          ),
+          notificationSettings: resolveNotificationSettings(
+            persisted?.notificationSettings,
+          ),
+        };
+        const cleaned = sanitizeRelations(
+          next.clients,
+          next.sessions,
+          next.homework,
+        );
+        return { ...next, ...cleaned };
+      },
     },
   ),
 );

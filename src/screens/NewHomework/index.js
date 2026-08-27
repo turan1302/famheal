@@ -100,7 +100,9 @@ const NewHomework = () => {
       title: existing ? 'Ödev güncellendi' : 'Ödev eklendi',
       textBody: title.trim(),
     });
-    navigation.goBack();
+    if (!existing) {
+      navigation.goBack();
+    }
   };
 
   const onDelete = () => {
