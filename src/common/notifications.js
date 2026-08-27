@@ -1,0 +1,218 @@
+import notifee, {
+  AndroidImportance,
+  TriggerType,
+} from '@notifee/react-native';
+import { Platform } from 'react-native';
+import {
+  reminderDateTime,
+  sessionDateTime,
+  shiftOutOfQuietHours,
+  formatShortDate,
+  isClosedSessionStatus,
+} from './helpers';
+
+const CHANNEL_ID = 'famheal-sessions';
+
+export const DEFAULT_NOTIFICATION_SETTINGS = {
+  types: {
+    session: true,
+    homework: true,
+  },
+  quietHours: {
+    enabled: false,
+    start: '22:00',
+    end: '08:00',
+  },
+};
+
+export const resolveNotificationSettings = settings => ({
+  types: {
+    session: settings?.types?.session !== false,
+    homework: settings?.types?.homework !== false,
+  },
+  quietHours: {
+    enabled: Boolean(settings?.quietHours?.enabled),
+    start: settings?.quietHours?.start || '22:00',
+    end: settings?.quietHours?.end || '08:00',
+  },
+});
+
+const applyQuietHours = (date, prefs) => {
+  if (!prefs.quietHours.enabled) {
+    return date;
+  }
+  return shiftOutOfQuietHours(
+    date,
+    prefs.quietHours.start,
+    prefs.quietHours.end,
+  );
+};
+
+export async function ensureNotificationSetup() {
+  try {
+    await notifee.requestPermission();
+
+    if (Platform.OS === 'android') {
+      await notifee.createChannel({
+        id: CHANNEL_ID,
+        name: 'FamHeal hatırlatmaları',
+        importance: AndroidImportance.HIGH,
+        vibration: true,
+      });
+    }
+  } catch {
+    // permission denied or native module unavailable
+  }
+}
+
+export async function cancelSessionReminder(sessionId) {
+  try {
+    await notifee.cancelNotification(`session-${sessionId}`);
+  } catch {
+    // ignore missing notification
+  }
+}
+
+export async function cancelHomeworkReminder(homeworkId) {
+  try {
+    await notifee.cancelNotification(`homework-${homeworkId}`);
+  } catch {
+    // ignore missing notification
+  }
+}
+
+export async function scheduleSessionReminder(session, settings) {
+  const prefs = resolveNotificationSettings(settings);
+  try {
+    if (!prefs.types.session || isClosedSessionStatus(session?.status)) {
+      await cancelSessionReminder(session.id);
+      return false;
+    }
+
+    const sessionAt = sessionDateTime(session);
+    let reminderAt = applyQuietHours(reminderDateTime(session), prefs);
+    if (reminderAt.getTime() >= sessionAt.getTime()) {
+      await cancelSessionReminder(session.id);
+      return false;
+    }
+    if (reminderAt.getTime() <= Date.now()) {
+      return false;
+    }
+
+    await ensureNotificationSetup();
+    await cancelSessionReminder(session.id);
+
+    await notifee.createTriggerNotification(
+      {
+        id: `session-${session.id}`,
+        title: 'Seans yaklaşıyor',
+        body: `${session.name} · ${formatShortDate(sessionDateTime(session))} · ${session.time} · ${session.type}`,
+        android: {
+          channelId: CHANNEL_ID,
+          pressAction: { id: 'default' },
+        },
+      },
+      {
+        type: TriggerType.TIMESTAMP,
+        timestamp: reminderAt.getTime(),
+        alarmManager: { allowWhileIdle: true },
+      },
+    );
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function scheduleHomeworkReminder(item, settings) {
+  const prefs = resolveNotificationSettings(settings);
+  try {
+    if (!prefs.types.homework || !item?.due) {
+      await cancelHomeworkReminder(item.id);
+      return false;
+    }
+
+    const due = new Date(item.due);
+    let reminderAt = new Date(due);
+    reminderAt.setHours(9, 0, 0, 0);
+    reminderAt = applyQuietHours(reminderAt, prefs);
+
+    if (reminderAt.getTime() <= Date.now()) {
+      await cancelHomeworkReminder(item.id);
+      return false;
+    }
+
+    await ensureNotificationSetup();
+    await cancelHomeworkReminder(item.id);
+
+    await notifee.createTriggerNotification(
+      {
+        id: `homework-${item.id}`,
+        title: 'Ödev teslim günü',
+        body: `${item.client || 'Danışan'} · ${item.title} · ${formatShortDate(due)}`,
+        android: {
+          channelId: CHANNEL_ID,
+          pressAction: { id: 'default' },
+        },
+      },
+      {
+        type: TriggerType.TIMESTAMP,
+        timestamp: reminderAt.getTime(),
+        alarmManager: { allowWhileIdle: true },
+      },
+    );
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function scheduleUpcomingSessionReminders(sessions = [], settings) {
+  try {
+    await ensureNotificationSetup();
+    await Promise.allSettled(
+      sessions.map(session => scheduleSessionReminder(session, settings)),
+    );
+  } catch {
+    // native module or permission missing
+  }
+}
+
+export async function scheduleUpcomingHomeworkReminders(
+  homework = [],
+  settings,
+) {
+  try {
+    await ensureNotificationSetup();
+    await Promise.allSettled(
+      homework.map(item => scheduleHomeworkReminder(item, settings)),
+    );
+  } catch {
+    // native module or permission missing
+  }
+}
+
+export async function scheduleAllReminders(
+  sessions = [],
+  homework = [],
+  settings,
+) {
+  await scheduleUpcomingSessionReminders(sessions, settings);
+  await scheduleUpcomingHomeworkReminders(homework, settings);
+}
+
+export function upcomingSessionNotifications(sessions = []) {
+  return sessions
+    .filter(session => !isClosedSessionStatus(session.status))
+    .map(session => ({
+      id: session.id,
+      title: `${session.time} seansı yaklaşıyor`,
+      body: `${session.name} · ${session.type}`,
+      dateLabel: formatShortDate(sessionDateTime(session)),
+      at: sessionDateTime(session),
+    }))
+    .filter(item => item.at.getTime() > Date.now() - 60 * 60 * 1000)
+    .sort((a, b) => a.at - b.at);
+}

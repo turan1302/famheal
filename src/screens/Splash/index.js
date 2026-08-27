@@ -1,0 +1,132 @@
+import { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  Animated,
+  StatusBar,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getOnboardingCompleted } from '../../common/onboarding';
+import { replace } from '../../common/NavigationService';
+import { useThemeColors } from '../../theme';
+import styles from './styles';
+
+const Splash = () => {
+  const colors = useThemeColors();
+  const insets = useSafeAreaInsets();
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.88)).current;
+  const dot1 = useRef(new Animated.Value(0.35)).current;
+  const dot2 = useRef(new Animated.Value(0.35)).current;
+  const dot3 = useRef(new Animated.Value(0.35)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 700,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 7,
+        tension: 50,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    const pulse = (anim, delay) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: 380,
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 0.35,
+            duration: 380,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+
+    const loop1 = pulse(dot1, 0);
+    const loop2 = pulse(dot2, 160);
+    const loop3 = pulse(dot3, 320);
+    loop1.start();
+    loop2.start();
+    loop3.start();
+
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const completed = await getOnboardingCompleted();
+      if (cancelled) return;
+      replace(completed ? 'WelcomeNavigator' : 'OnBoard');
+    }, 2400);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      loop1.stop();
+      loop2.stop();
+      loop3.stop();
+    };
+  }, [fadeAnim, scaleAnim, dot1, dot2, dot3]);
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={colors.statusBar}
+        backgroundColor="transparent"
+        translucent
+      />
+
+      <View style={[styles.decorTop, { backgroundColor: colors.decor }]} />
+      <View style={[styles.decorBottom, { backgroundColor: colors.decor }]} />
+      <View style={[styles.decorMid, { backgroundColor: colors.decor }]} />
+
+      <Animated.View
+        style={[
+          styles.content,
+          {
+            opacity: fadeAnim,
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
+      >
+        <Text style={[styles.brand, { color: colors.brand }]}>FamHeal</Text>
+
+        <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+        <Text style={[styles.tagline, { color: colors.tagline }]}>
+          Aile ve Ebeveyn Danışmanlığı
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.body }]}>
+          Danışan takibinizi sakin ve düzenli yönetin
+        </Text>
+      </Animated.View>
+
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 28) }]}>
+        <View style={styles.loaderRow}>
+          <Animated.View
+            style={[styles.dot, { backgroundColor: colors.dotActive, opacity: dot1 }]}
+          />
+          <Animated.View
+            style={[styles.dot, { backgroundColor: colors.dotActive, opacity: dot2 }]}
+          />
+          <Animated.View
+            style={[styles.dot, { backgroundColor: colors.dotActive, opacity: dot3 }]}
+          />
+        </View>
+        <Text style={[styles.version, { color: colors.version }]}>
+          FamHeal · Offline First
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+export default Splash;

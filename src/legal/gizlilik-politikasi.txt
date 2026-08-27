@@ -1,0 +1,69 @@
+FAMHEAL GİZLİLİK POLİTİKASI
+
+Son güncelleme: 27 Ağustos 2026
+
+1. KAPSAM
+
+Bu metin, FamHeal uygulamasının gizlilik yaklaşımını açıklar. FamHeal; psikolojik danışmanlık, aile danışmanlığı ve benzeri seans süreçlerini cihazda yönetmek için kullanılan çevrimdışı bir uygulamadır. Hesap oluşturma, üyelik veya uzak sunucuya kayıt yoktur.
+
+2. VERİLER NEREDE TUTULUR
+
+Danışan, seans, ödev ve seans türü kayıtları yalnızca sizin cihazınızda saklanır. Uygulama bu kayıtları kendi sunucusuna göndermez, buluta yüklemez ve üçüncü kişiye satmaz.
+
+3. İŞLENEN BİLGİLER
+
+Uygulamayı kullanırken girdiğiniz bilgiler şunları kapsayabilir:
+
+- Danışan adı soyadı, telefonu ve seans türü
+- Seans tarihi, saati, süresi ve notları
+- Ödev başlığı, teslim tarihi ve açıklaması
+- Seans türü tanımları
+- Görünüm tercihi (sistem / açık / koyu)
+- Yaklaşan seans hatırlatmaları için yerel bildirim kaydı
+
+Bu bilgiler sizin tarafınızdan girilir. FamHeal otomatik olarak rehberinizden, konumunuzdan veya sosyal hesaplarınızdan veri çekmez.
+
+4. İŞLEME AMAÇLARI
+
+Veriler yalnızca şu amaçlarla kullanılır:
+
+- Danışan ve seans takibini cihaz üzerinde göstermek
+- Ödev kayıtlarını yönetmek
+- Yaklaşan seans için cihazda yerel hatırlatma kurmak
+- Seçtiğiniz görünümü hatırlamak
+
+5. BİLDİRİMLER
+
+Uygulama, yaklaşan seans için yaklaşık 15 dakika önce yerel bildirim gönderebilir. Bildirim içeriği cihazınızda hazırlanır; bu hatırlatmalar FamHeal sunucusuna iletilmez. Bildirim iznini cihaz ayarlarından kapatabilirsiniz.
+
+6. PAYLAŞIM
+
+FamHeal, girdiğiniz danışan ve seans bilgilerini reklam, analitik veya pazarlama amacıyla paylaşmaz. İşletim sisteminin bildirim ve depolama hizmetleri, uygulamanın çalışması için cihaz düzeyinde kullanılabilir. İnternet izni sistem gereksinimleriyle bulunabilir; danışan kayıtlarının uzak bir hesaba aktarılması bu politika kapsamında yapılmaz.
+
+7. SAKLAMA VE SİLME
+
+Kayıtlar, siz silene dek cihazda kalır. Tek bir ödev, seans türü veya ilgili kayıt uygulamadan silinebilir. Uygulamayı cihazdan kaldırmak, cihazda tutulan FamHeal verilerinin de silinmesine yol açar.
+
+8. GÜVENLİK
+
+Veriler cihazın kendi depolamasında tutulur. Cihaz kilidi, işletim sistemi güncellemeleri ve uygulamayı başkalarıyla paylaşmama, bu kayıtların korunması için sizin sorumluluğunuzdadır. Cihazınızın yedeklenmesi, işletim sistemi ayarlarınıza bağlı olarak uygulama verilerini de kopyalayabilir.
+
+9. SAĞLIK VE MESLEKİ GİZLİLİK
+
+Seans notları ve danışan bilgileri nitelik olarak özel kategorili kişisel veri sayılabilir. Bu kayıtları giren ve saklayan kişi olarak meslekî gizlilik, saklama süresi ve erişim tedbirleri size aittir. FamHeal bir klinik arşiv veya yasal saklama hizmeti sunmaz.
+
+10. ÇOCUKLAR
+
+Uygulama, 18 yaşından küçük danışanlara ait kayıtların girilmesini teknik olarak engellemez. Böyle bir kayıt tutuluyorsa yasal temsilci onayı ve meslekî yükümlülükler kullanıcıya aittir.
+
+11. HAKLARINIZ
+
+Kendi cihazınızdaki kayıtlara uygulamadan erişebilir, düzeltebilir ve silebilirsiniz. KVKK kapsamındaki haklarınız ayrıntılı olarak KVKK aydınlatma metninde yer alır.
+
+12. DEĞİŞİKLİKLER
+
+Bu metin uygulama güncellemeleriyle birlikte yenilenebilir. Güncel sürüm Ayarlar bölümünde yer alır.
+
+13. İLETİŞİM
+
+FamHeal çevrimdışı çalışır ve uygulama içinde hesap yoktur. Gizlilik metnine ilişkin sorularınız için uygulama geliştiricisiyle, danışan verilerine ilişkin talepler için ise kayıtları tutan uzmanla (cihaz sahibi) iletişime geçilmelidir.

@@ -1,0 +1,79 @@
+FAMHEAL KVKK AYDINLATMA METNİ
+
+6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca hazırlanmıştır.
+Son güncelleme: 27 Ağustos 2026
+
+1. VERİ SORUMLUSU
+
+FamHeal, danışan kayıtlarını uzak bir sunucuda işlemeyen çevrimdışı bir uygulamadır. Cihaza girilen danışan adı, iletişim bilgisi, seans notu ve ödev gibi kişisel veriler bakımından veri sorumlusu, bu kayıtları mesleki faaliyeti kapsamında tutan uygulama kullanıcısıdır.
+
+Uygulama, bu verileri kendi adına toplamaz, profillemez ve üçüncü kişilere aktarmaz. Yazılım yalnızca cihaz üzerindeki kaydı görüntülemek, düzenlemek ve silmek için bir araçtır.
+
+2. İŞLENEN KİŞİSEL VERİLER
+
+Uygulamada tutulabilecek veriler:
+
+Kimlik: ad soyad, kısaltılmış ad (baş harfler)
+İletişim: telefon numarası
+Mesleki / süreç bilgisi: seans türü, tarih, saat, süre, seans notu, ödev içeriği ve teslim tarihi
+İşlem güvenliği: cihazdaki yerel bildirim zamanlaması
+Kullanıcı tercihi: tema (sistem, açık, koyu)
+
+Özel nitelikli kişisel veri: seans notları ve terapi sürecine ilişkin açıklamalar, KVKK m.6 kapsamında sağlık verisi niteliği taşıyabilir.
+
+3. İŞLEME AMAÇLARI
+
+Veriler; randevu ve seans takibi, danışan ödevlerinin kaydı, hatırlatma gösterimi ve uygulamanın tercih ettiğiniz görünümde çalışması amacıyla işlenir. Bu amaçlar dışında reklam, otomatik karar veya profilleme yapılmaz.
+
+4. HUKUKİ SEBEPLER
+
+Kullanıcının kendi cihazında tuttuğu meslekî kayıtlar bakımından işleme, kural olarak:
+
+- KVKK m.5/2 (c): bir sözleşmenin kurulması veya ifası (danışanın rızası ve meslek sözleşmesi çerçevesinde)
+- KVKK m.5/2 (ç): veri sorumlusunun hukuki yükümlülüğü
+- KVKK m.5/2 (e): bir hakkın tesisi, kullanılması veya korunması
+- KVKK m.5/2 (f): meşru menfaat (yalnızca cihaz içi hatırlatma ve görünüm tercihi gibi sınırlı işlemler)
+
+Sağlık ve seans içeriğine ilişkin özel nitelikli veriler için KVKK m.6 uyarınca açık rıza veya kanunda öngörülen diğer istisnalar, kayıtları tutan uzmanın yükümlülüğündedir. FamHeal bu rızayı sizin yerinize toplamaz.
+
+5. TOPLAMA YÖNTEMİ
+
+Veriler, uygulama formlarına sizin yazmanız yoluyla elektronik ortamda, yalnızca ilgili cihazda toplanır. Rehber, konum, mikrofon veya kamera erişimi bu metnin kapsamında zorunlu kılınmaz.
+
+6. AKTARIM
+
+Danışan ve seans kayıtları FamHeal tarafından yurt içi veya yurt dışı bir sunucuya aktarılmaz. İşletim sisteminin bildirim altyapısı, hatırlatmanın cihazda gösterilmesi için kullanılabilir. Bu, uygulama geliştiricisine danışan listesi gönderilmesi anlamına gelmez.
+
+7. SAKLAMA SÜRESİ
+
+Saklama süresi, kayıtları tutan uzmanın tabi olduğu meslekî ve yasal yükümlülüklere göre belirlenir. Uygulama sabit bir arşiv süresi dayatmaz. Kayıt, uygulamadan silinene veya uygulama kaldırılana dek cihazda kalır.
+
+8. İLGİLİ KİŞİNİN HAKLARI (KVKK m.11)
+
+Danışan (ilgili kişi), veri sorumlusuna başvurarak:
+
+- Kişisel veri işlenip işlenmediğini öğrenme
+- İşlenmişse buna ilişkin bilgi talep etme
+- İşleme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme
+- Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme
+- Eksik veya yanlış işlenmişse düzeltilmesini isteme
+- KVKK m.7 kapsamındaki şartlarda silinmesini veya yok edilmesini isteme
+- Düzeltme, silme ve yok etme işlemlerinin, verinin aktarıldığı üçüncü kişilere bildirilmesini isteme
+- İşlenen verilerin münhasıran otomatik sistemler ile analiz edilmesi suretiyle aleyhine bir sonucun ortaya çıkmasına itiraz etme
+- Kanuna aykırı işleme nedeniyle zarara uğraması hâlinde zararın giderilmesini talep etme
+
+haklarına sahiptir.
+
+Bu haklar, FamHeal sunucusuna değil, kayıtları tutan uzmana (cihaz sahibi / veri sorumlusu) yöneltilir. Uzman, talebi uygulamadaki ilgili kaydı görüntüleyerek, düzelterek veya silerek yerine getirebilir.
+
+9. BAŞVURU
+
+KVKK m.13 uyarınca ilgili kişi başvurularını, veri sorumlusunun duyurduğu yöntemlerle yapar. FamHeal hesap veya destek paneli sunmadığından, danışana ait talepler uygulama kullanıcısı tarafından karşılanır.
+
+10. GÜVENLİK TEDBİRLERİ
+
+Uygulama kayıtları cihaz deposunda tutar ve Android yedeklemeyi kapatacak şekilde yapılandırılmıştır. Buna ek olarak cihaz kilidi, yetkisiz kişilerin uygulamayı kullanmaması ve meslekî gizlilik kurallarına uyulması veri sorumlusunun alması gereken tedbirlerdendir.
+
+11. GÜNCELLEME
+
+Bu aydınlatma metni, uygulamanın işleyişi değiştiğinde güncellenir. Güncel metin Ayarlar > KVKK bölümünde yer alır.
