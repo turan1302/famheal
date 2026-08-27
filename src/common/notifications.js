@@ -64,25 +64,32 @@ const applyQuietHours = (date, prefs) => {
   );
 };
 
-export async function ensureNotificationSetup() {
-  try {
-    await notifee.requestPermission({
-      alert: true,
-      sound: true,
-      badge: true,
-    });
+let setupPromise = null;
 
-    if (Platform.OS === 'android') {
-      await notifee.createChannel({
-        id: CHANNEL_ID,
-        name: 'FamHeal hatırlatmaları',
-        importance: AndroidImportance.HIGH,
-        vibration: true,
-      });
-    }
-  } catch {
-    // permission denied or native module unavailable
+export async function ensureNotificationSetup() {
+  if (!setupPromise) {
+    setupPromise = (async () => {
+      try {
+        await notifee.requestPermission({
+          alert: true,
+          sound: true,
+          badge: true,
+        });
+
+        if (Platform.OS === 'android') {
+          await notifee.createChannel({
+            id: CHANNEL_ID,
+            name: 'FamHeal hatırlatmaları',
+            importance: AndroidImportance.HIGH,
+            vibration: true,
+          });
+        }
+      } catch {
+        // permission denied or native module unavailable
+      }
+    })();
   }
+  await setupPromise;
 }
 
 export async function cancelSessionReminder(sessionId) {
@@ -101,26 +108,36 @@ export async function cancelHomeworkReminder(homeworkId) {
   }
 }
 
-export async function scheduleSessionReminder(session, settings) {
+export async function scheduleSessionReminder(session, settings, options = {}) {
   const prefs = resolveNotificationSettings(settings);
+  const skipCancel = Boolean(options.skipCancel);
+  const skipSetup = Boolean(options.skipSetup);
   try {
     if (!prefs.types.session || isClosedSessionStatus(session?.status)) {
-      await cancelSessionReminder(session.id);
+      if (!skipCancel) {
+        await cancelSessionReminder(session.id);
+      }
       return false;
     }
 
     const sessionAt = sessionDateTime(session);
     let reminderAt = applyQuietHours(reminderDateTime(session), prefs);
     if (reminderAt.getTime() >= sessionAt.getTime()) {
-      await cancelSessionReminder(session.id);
+      if (!skipCancel) {
+        await cancelSessionReminder(session.id);
+      }
       return false;
     }
     if (reminderAt.getTime() <= Date.now()) {
       return false;
     }
 
-    await ensureNotificationSetup();
-    await cancelSessionReminder(session.id);
+    if (!skipSetup) {
+      await ensureNotificationSetup();
+    }
+    if (!skipCancel) {
+      await cancelSessionReminder(session.id);
+    }
 
     await notifee.createTriggerNotification(
       {
@@ -142,11 +159,15 @@ export async function scheduleSessionReminder(session, settings) {
   }
 }
 
-export async function scheduleHomeworkReminder(item, settings) {
+export async function scheduleHomeworkReminder(item, settings, options = {}) {
   const prefs = resolveNotificationSettings(settings);
+  const skipCancel = Boolean(options.skipCancel);
+  const skipSetup = Boolean(options.skipSetup);
   try {
     if (!prefs.types.homework || !item?.due) {
-      await cancelHomeworkReminder(item.id);
+      if (!skipCancel) {
+        await cancelHomeworkReminder(item.id);
+      }
       return false;
     }
 
@@ -156,12 +177,18 @@ export async function scheduleHomeworkReminder(item, settings) {
     reminderAt = applyQuietHours(reminderAt, prefs);
 
     if (reminderAt.getTime() <= Date.now()) {
-      await cancelHomeworkReminder(item.id);
+      if (!skipCancel) {
+        await cancelHomeworkReminder(item.id);
+      }
       return false;
     }
 
-    await ensureNotificationSetup();
-    await cancelHomeworkReminder(item.id);
+    if (!skipSetup) {
+      await ensureNotificationSetup();
+    }
+    if (!skipCancel) {
+      await cancelHomeworkReminder(item.id);
+    }
 
     await notifee.createTriggerNotification(
       {
@@ -183,11 +210,30 @@ export async function scheduleHomeworkReminder(item, settings) {
   }
 }
 
+const SCHEDULE_CHUNK = 6;
+
+const runInChunks = async jobs => {
+  for (let index = 0; index < jobs.length; index += SCHEDULE_CHUNK) {
+    await Promise.allSettled(
+      jobs.slice(index, index + SCHEDULE_CHUNK).map(job => job()),
+    );
+    if (index + SCHEDULE_CHUNK < jobs.length) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  }
+};
+
 export async function scheduleUpcomingSessionReminders(sessions = [], settings) {
   try {
     await ensureNotificationSetup();
-    await Promise.allSettled(
-      sessions.map(session => scheduleSessionReminder(session, settings)),
+    await runInChunks(
+      sessions.map(
+        session => () =>
+          scheduleSessionReminder(session, settings, {
+            skipSetup: true,
+            skipCancel: true,
+          }),
+      ),
     );
   } catch {
     // native module or permission missing
@@ -200,8 +246,14 @@ export async function scheduleUpcomingHomeworkReminders(
 ) {
   try {
     await ensureNotificationSetup();
-    await Promise.allSettled(
-      homework.map(item => scheduleHomeworkReminder(item, settings)),
+    await runInChunks(
+      homework.map(
+        item => () =>
+          scheduleHomeworkReminder(item, settings, {
+            skipSetup: true,
+            skipCancel: true,
+          }),
+      ),
     );
   } catch {
     // native module or permission missing

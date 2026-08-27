@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import Share from 'react-native-share';
 import {
   errorCodes,
@@ -31,19 +31,72 @@ const utf8ToBase64 = value => {
   return output;
 };
 
-export const shareBackupFile = async (json, fileName) => {
+const isShareCancelled = error => {
+  if (isErrorWithCode(error, errorCodes.OPERATION_CANCELED)) {
+    return true;
+  }
+  const message = String(error?.message || error?.error || error || '');
+  return /cancel|did not share|ECANCELLED|user.?did.?not/i.test(message);
+};
+
+const openShare = ({ fileName, mime, url, useInternalStorage }) => {
   const baseName = fileName.replace(/\.json$/i, '');
   return Share.open({
     title: 'FamHeal yedek',
     subject: fileName,
     filename: Platform.OS === 'ios' ? fileName : baseName,
-    type: 'application/json',
-    url: `data:application/json;base64,${utf8ToBase64(json)}`,
+    type: mime,
+    url,
     failOnCancel: false,
+    useInternalStorage,
+  });
+};
+
+const androidFiles = () => NativeModules.BackupFileModule;
+
+export const shareBackupFile = async (json, fileName) => {
+  if (Platform.OS === 'android' && androidFiles()?.saveJson) {
+    const saved = await androidFiles().saveJson(fileName, json);
+    if (!saved?.size) {
+      throw new Error('empty-file');
+    }
+    return { success: true, savedToDownloads: true, size: saved.size };
+  }
+
+  const encoded = utf8ToBase64(json);
+  if (Platform.OS === 'android') {
+    try {
+      return await openShare({
+        fileName,
+        mime: 'application/json',
+        url: `data:application/json;base64,${encoded}`,
+        useInternalStorage: true,
+      });
+    } catch (error) {
+      if (isShareCancelled(error)) {
+        throw error;
+      }
+      return openShare({
+        fileName,
+        mime: 'text/plain',
+        url: `data:text/plain;base64,${encoded}`,
+        useInternalStorage: true,
+      });
+    }
+  }
+
+  return openShare({
+    fileName,
+    mime: 'application/json',
+    url: `data:application/json;base64,${encoded}`,
+    useInternalStorage: false,
   });
 };
 
 const readUriText = async uri => {
+  if (androidFiles()?.readText) {
+    return androidFiles().readText(uri);
+  }
   const response = await fetch(uri);
   if (!response.ok) {
     throw new Error('read-failed');
@@ -61,7 +114,7 @@ export const pickBackupJson = async () => {
       return { ok: false, cancelled: true };
     }
 
-    let uri = file.uri;
+    const uris = [file.uri];
     try {
       const [copy] = await keepLocalCopy({
         destination: 'cachesDirectory',
@@ -73,16 +126,30 @@ export const pickBackupJson = async () => {
         ],
       });
       if (copy?.status === 'success' && copy.localUri) {
-        uri = copy.localUri;
+        uris.unshift(copy.localUri);
       }
     } catch {
-      // fall back to the original picker uri
+      // keep the original picker uri
     }
 
-    const text = await readUriText(uri);
-    return { ok: true, text, name: file.name };
+    let lastError = null;
+    for (const uri of uris) {
+      try {
+        const text = await readUriText(uri);
+        if (String(text || '').trim()) {
+          return { ok: true, text, name: file.name };
+        }
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    if (lastError) {
+      throw lastError;
+    }
+    return { ok: false, cancelled: false, empty: true };
   } catch (error) {
-    if (isErrorWithCode(error, errorCodes.OPERATION_CANCELED)) {
+    if (isErrorWithCode(error, errorCodes.OPERATION_CANCELED) || isShareCancelled(error)) {
       return { ok: false, cancelled: true };
     }
     return { ok: false, cancelled: false };

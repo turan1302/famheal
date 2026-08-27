@@ -515,7 +515,6 @@ export const useAppStore = create(
             : get().sessionDurations,
         );
 
-        await cancelAllReminders();
         set({
           clients: payload.clients,
           sessions: payload.sessions,
@@ -526,11 +525,16 @@ export const useAppStore = create(
         });
 
         const state = get();
-        await scheduleAllReminders(
-          state.sessions,
-          state.homework,
-          state.notificationSettings,
-        );
+        Promise.resolve()
+          .then(() => cancelAllReminders())
+          .then(() =>
+            scheduleAllReminders(
+              state.sessions,
+              state.homework,
+              state.notificationSettings,
+            ),
+          )
+          .catch(() => {});
         return state;
       },
 

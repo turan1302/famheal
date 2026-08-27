@@ -54,8 +54,10 @@ const DataBackup = () => {
       }
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
-        title: 'Yedek hazır',
-        textBody: 'JSON dosyasını Dosyalar, Drive veya e-posta ile saklayın.',
+        title: 'Yedek kaydedildi',
+        textBody: result?.savedToDownloads
+          ? 'JSON dosyası İndirilenler klasörüne yazıldı.'
+          : 'JSON dosyasını Dosyalar, Drive veya e-posta ile saklayın.',
       });
     } catch (error) {
       const message = String(error?.message || error?.error || '');
@@ -85,8 +87,10 @@ const DataBackup = () => {
         if (!picked.cancelled) {
           Toast.show({
             type: ALERT_TYPE.WARNING,
-            title: 'Dosya seçilemedi',
-            textBody: 'JSON yedek dosyasını tekrar deneyin.',
+            title: 'Dosya okunamadı',
+            textBody: picked.empty
+              ? 'Seçilen dosya boş. Yeni bir JSON yedek alın ve onu seçin.'
+              : 'JSON yedek dosyasını Dosyalar uygulamasından tekrar seçin.',
           });
         }
         return;
@@ -112,16 +116,22 @@ const DataBackup = () => {
     if (!pending || busy) {
       return;
     }
+    const nextTheme = pending.themePreference;
     setBusy(true);
+    await new Promise(resolve => setTimeout(resolve, 50));
     try {
       await importBackupData(pending);
-      await setPreference(pending.themePreference);
       setPending(null);
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Yedek içe aktarıldı',
         textBody: 'Danışan, seans ve ödev kayıtları geri yüklendi.',
       });
+      if (nextTheme && nextTheme !== preference) {
+        setTimeout(() => {
+          setPreference(nextTheme);
+        }, 0);
+      }
     } catch {
       Toast.show({
         type: ALERT_TYPE.DANGER,
@@ -217,7 +227,7 @@ const DataBackup = () => {
               ]}
             >
               <Text style={[styles.sideText, { color: colors.quickPrimaryText }]}>
-                Üzerine yaz
+                {busy ? 'Yazılıyor...' : 'Üzerine yaz'}
               </Text>
             </Pressable>
           </View>
