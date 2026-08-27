@@ -2,14 +2,17 @@ import { useEffect, useRef } from 'react';
 import {
   View,
   Text,
+  Image,
   Animated,
-  StatusBar,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getOnboardingCompleted } from '../../common/onboarding';
 import { replace } from '../../common/NavigationService';
 import { useThemeColors } from '../../theme';
+import AppStatusBar from '../../components/AppStatusBar';
 import styles from './styles';
+
+const logo = require('../../assets/famheal-icon.png');
 
 const Splash = () => {
   const colors = useThemeColors();
@@ -78,15 +81,7 @@ const Splash = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar
-        barStyle={colors.statusBar}
-        backgroundColor="transparent"
-        translucent
-      />
-
-      <View style={[styles.decorTop, { backgroundColor: colors.decor }]} />
-      <View style={[styles.decorBottom, { backgroundColor: colors.decor }]} />
-      <View style={[styles.decorMid, { backgroundColor: colors.decor }]} />
+      <AppStatusBar barStyle={colors.statusBar} />
 
       <Animated.View
         style={[
@@ -97,16 +92,7 @@ const Splash = () => {
           },
         ]}
       >
-        <Text style={[styles.brand, { color: colors.brand }]}>FamHeal</Text>
-
-        <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-
-        <Text style={[styles.tagline, { color: colors.tagline }]}>
-          Aile ve Ebeveyn Danışmanlığı
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.body }]}>
-          Danışan takibinizi sakin ve düzenli yönetin
-        </Text>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
       </Animated.View>
 
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 28) }]}>

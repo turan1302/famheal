@@ -148,6 +148,8 @@ const SessionTypes = () => {
         onChangeText={setName}
         placeholder="Örn. Çocuk Terapisi"
         placeholderTextColor={colors.cardTextMuted}
+        autoCapitalize="words"
+        autoCorrect={false}
         style={[
           styles.input,
           { backgroundColor: colors.card, color: colors.cardText },
@@ -300,6 +302,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 16,
     paddingHorizontal: 16,
+    paddingVertical: 0,
     fontSize: 15,
     marginBottom: 10,
   },

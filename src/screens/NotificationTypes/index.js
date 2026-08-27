@@ -54,6 +54,7 @@ const NotificationTypes = () => {
               }
               trackColor={{ false: colors.cardMuted, true: colors.mint }}
               thumbColor="#FFFFFF"
+              ios_backgroundColor={colors.cardMuted}
             />
           </View>
         );

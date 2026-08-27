@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import {
   View,
   Text,
-  StatusBar,
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -12,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemeColors, getTabBarTotalHeight } from '../../theme';
 import SessionCard from '../../components/SessionCard';
 import FadeInView from '../../components/FadeInView';
+import AppStatusBar from '../../components/AppStatusBar';
 import { useAppStore } from '../../store/useAppStore';
 import {
   isSameDay,
@@ -131,11 +131,7 @@ const Home = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar
-        barStyle={colors.statusBar}
-        backgroundColor="transparent"
-        translucent
-      />
+      <AppStatusBar barStyle={colors.statusBar} />
 
       <FadeInView>
         <ScrollView
@@ -149,15 +145,6 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Pressable
-              onPress={() => goTab('SettingsNavigator')}
-              style={[styles.profileBtn, { backgroundColor: colors.avatarFallback }]}
-              accessibilityRole="button"
-              accessibilityLabel="Ayarlar"
-            >
-              <Icon name="person" size={18} color={colors.brand} />
-            </Pressable>
-
             <Text style={[styles.brand, { color: colors.brand }]}>FamHeal</Text>
 
             <Pressable
@@ -290,15 +277,21 @@ const Home = () => {
               </Pressable>
             </View>
 
-            {todaySessions.slice(0, 3).map(session => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                onPress={() =>
-                  navigation.navigate('SessionDetail', { sessionId: session.id })
-                }
-              />
-            ))}
+            {todaySessions.length === 0 ? (
+              <Text style={[styles.emptySessions, { color: colors.textMuted }]}>
+                Bugün planlanmış seans yok.
+              </Text>
+            ) : (
+              todaySessions.slice(0, 3).map(session => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  onPress={() =>
+                    navigation.navigate('SessionDetail', { sessionId: session.id })
+                  }
+                />
+              ))
+            )}
           </View>
         </ScrollView>
       </FadeInView>

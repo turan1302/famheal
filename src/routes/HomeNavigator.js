@@ -16,6 +16,7 @@ const HomeNavigator = () => {
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
+        fullScreenGestureEnabled: true,
         animation: 'slide_from_right',
         animationDuration: 280,
       }}

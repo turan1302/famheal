@@ -1,14 +1,16 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CLIENTS, HOMEWORK, SESSIONS, SESSION_TYPES } from '../common/mockData';
+import { SESSION_TYPES } from '../common/mockData';
 import { STORAGE_KEYS } from '../common/storageKeys';
-import { getInitials, padTime, resolveSessionStatus, isClosedSessionStatus } from '../common/helpers';
+import { getInitials, padTime, resolveSessionStatus, isClosedSessionStatus, formatDurationLabel, normalizeSessionDurations, DEFAULT_SESSION_DURATIONS } from '../common/helpers';
 import {
+  cancelAllReminders,
   cancelHomeworkReminder,
   cancelSessionReminder,
   DEFAULT_NOTIFICATION_SETTINGS,
   resolveNotificationSettings,
+  scheduleAllReminders,
   scheduleHomeworkReminder,
   scheduleSessionReminder,
 } from '../common/notifications';
@@ -20,10 +22,11 @@ const clientAccent = index => (index % 2 === 0 ? 'mint' : 'teal');
 export const useAppStore = create(
   persist(
     (set, get) => ({
-      clients: CLIENTS,
-      sessions: SESSIONS,
-      homework: HOMEWORK,
+      clients: [],
+      sessions: [],
+      homework: [],
       sessionTypes: SESSION_TYPES,
+      sessionDurations: DEFAULT_SESSION_DURATIONS,
       notificationSettings: DEFAULT_NOTIFICATION_SETTINGS,
 
       addClient: payload => {
@@ -72,7 +75,10 @@ export const useAppStore = create(
           type: payload.type || client?.type || 'Seans',
           time: padTime(date),
           date: date.toISOString(),
-          duration: payload.duration || '50 dk',
+          duration:
+            payload.duration ||
+            formatDurationLabel(get().sessionDurations[0]?.minutes) ||
+            '50 dk',
           notes: payload.notes?.trim() || '',
           status: 'upcoming',
           cancelReason: '',
@@ -368,6 +374,111 @@ export const useAppStore = create(
         return { ok: true, migrated: false };
       },
 
+      addSessionDuration: minutes => {
+        const value = Number(minutes);
+        if (!value || value < 1) {
+          return { ok: false, reason: 'empty' };
+        }
+        const exists = get().sessionDurations.some(item => item.minutes === value);
+        if (exists) {
+          return { ok: false, reason: 'duplicate' };
+        }
+        const item = { id: nextId('d'), minutes: value };
+        set(state => ({
+          sessionDurations: normalizeSessionDurations([
+            ...state.sessionDurations,
+            item,
+          ]),
+        }));
+        return { ok: true, item };
+      },
+
+      updateSessionDuration: (id, minutes) => {
+        const current = get().sessionDurations.find(item => item.id === id);
+        const value = Number(minutes);
+        if (!current || !value || value < 1) {
+          return { ok: false, reason: 'empty' };
+        }
+        const exists = get().sessionDurations.some(
+          item => item.id !== id && item.minutes === value,
+        );
+        if (exists) {
+          return { ok: false, reason: 'duplicate' };
+        }
+
+        const fromLabel = formatDurationLabel(current.minutes);
+        const toLabel = formatDurationLabel(value);
+        const sessionsCount = get().sessions.filter(
+          item => item.duration === fromLabel,
+        ).length;
+
+        set(state => ({
+          sessionDurations: normalizeSessionDurations(
+            state.sessionDurations.map(item =>
+              item.id === id ? { ...item, minutes: value } : item,
+            ),
+          ),
+          sessions: state.sessions.map(item =>
+            item.duration === fromLabel ? { ...item, duration: toLabel } : item,
+          ),
+        }));
+
+        return {
+          ok: true,
+          sessionsCount,
+          name: toLabel,
+        };
+      },
+
+      deleteSessionDuration: (id, replacementId) => {
+        const current = get().sessionDurations.find(item => item.id === id);
+        if (!current) {
+          return { ok: false, reason: 'missing' };
+        }
+        if (get().sessionDurations.length <= 1) {
+          return { ok: false, reason: 'last' };
+        }
+
+        const fromLabel = formatDurationLabel(current.minutes);
+        const sessionsCount = get().sessions.filter(
+          item => item.duration === fromLabel,
+        ).length;
+
+        if (sessionsCount > 0) {
+          const replacement = get().sessionDurations.find(
+            item => item.id === replacementId,
+          );
+          if (!replacement || replacement.id === id) {
+            return { ok: false, reason: 'replacement' };
+          }
+
+          const toLabel = formatDurationLabel(replacement.minutes);
+          set(state => ({
+            sessionDurations: state.sessionDurations.filter(
+              item => item.id !== id,
+            ),
+            sessions: state.sessions.map(item =>
+              item.duration === fromLabel
+                ? { ...item, duration: toLabel }
+                : item,
+            ),
+          }));
+
+          return {
+            ok: true,
+            migrated: true,
+            sessionsCount,
+            from: fromLabel,
+            to: toLabel,
+          };
+        }
+
+        set(state => ({
+          sessionDurations: state.sessionDurations.filter(item => item.id !== id),
+        }));
+        return { ok: true, migrated: false };
+      },
+
       updateNotificationSettings: patch => {
         const current = resolveNotificationSettings(get().notificationSettings);
         const next = {
@@ -376,6 +487,63 @@ export const useAppStore = create(
         };
         set({ notificationSettings: next });
         return next;
+      },
+
+      getBackupData: () => {
+        const state = get();
+        return {
+          clients: state.clients,
+          sessions: state.sessions,
+          homework: state.homework,
+          sessionTypes: state.sessionTypes,
+          sessionDurations: state.sessionDurations,
+          notificationSettings: state.notificationSettings,
+        };
+      },
+
+      importBackupData: async payload => {
+        const notificationSettings = resolveNotificationSettings(
+          payload.notificationSettings,
+        );
+        const sessionTypes =
+          payload.sessionTypes?.length > 0
+            ? payload.sessionTypes
+            : get().sessionTypes;
+        const sessionDurations = normalizeSessionDurations(
+          payload.sessionDurations?.length
+            ? payload.sessionDurations
+            : get().sessionDurations,
+        );
+
+        await cancelAllReminders();
+        set({
+          clients: payload.clients,
+          sessions: payload.sessions,
+          homework: payload.homework,
+          sessionTypes,
+          sessionDurations,
+          notificationSettings,
+        });
+
+        const state = get();
+        await scheduleAllReminders(
+          state.sessions,
+          state.homework,
+          state.notificationSettings,
+        );
+        return state;
+      },
+
+      resetAllData: async () => {
+        await cancelAllReminders();
+        set({
+          clients: [],
+          sessions: [],
+          homework: [],
+          sessionTypes: SESSION_TYPES,
+          sessionDurations: DEFAULT_SESSION_DURATIONS,
+          notificationSettings: DEFAULT_NOTIFICATION_SETTINGS,
+        });
       },
     }),
     {
@@ -386,6 +554,7 @@ export const useAppStore = create(
         sessions: state.sessions,
         homework: state.homework,
         sessionTypes: state.sessionTypes,
+        sessionDurations: state.sessionDurations,
         notificationSettings: state.notificationSettings,
       }),
       merge: (persisted, current) => ({
@@ -395,6 +564,7 @@ export const useAppStore = create(
           persisted?.sessionTypes?.length > 0
             ? persisted.sessionTypes
             : current.sessionTypes,
+        sessionDurations: normalizeSessionDurations(persisted?.sessionDurations),
         notificationSettings: resolveNotificationSettings(
           persisted?.notificationSettings,
         ),

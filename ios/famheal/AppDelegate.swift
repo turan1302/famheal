@@ -22,6 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeFactory = factory
 
     window = UIWindow(frame: UIScreen.main.bounds)
+    window?.backgroundColor = UIColor(
+      red: 245.0 / 255.0,
+      green: 249.0 / 255.0,
+      blue: 247.0 / 255.0,
+      alpha: 1
+    )
 
     factory.startReactNative(
       withModuleName: "famheal",

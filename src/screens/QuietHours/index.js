@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { View, Text, Switch, Pressable, StyleSheet, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, Switch, Pressable, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ThemedScreen from '../../components/ThemedScreen';
+import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
 import { useNotificationSettings } from '../../hooks/useNotificationSettings';
@@ -21,11 +21,8 @@ const QuietHours = () => {
     ? dateFromHm(quietHours[pickerField])
     : new Date();
 
-  const onChangeTime = (event, selectedDate) => {
-    if (Platform.OS === 'android') {
-      setPickerField(null);
-    }
-    if (event.type === 'dismissed' || !selectedDate || !pickerField) {
+  const onChangeTime = selectedDate => {
+    if (!pickerField) {
       return;
     }
     updateNotificationSettings({
@@ -60,6 +57,7 @@ const QuietHours = () => {
           }
           trackColor={{ false: colors.cardMuted, true: colors.mint }}
           thumbColor="#FFFFFF"
+          ios_backgroundColor={colors.cardMuted}
         />
       </View>
 
@@ -99,27 +97,13 @@ const QuietHours = () => {
         </View>
       </Pressable>
 
-      {pickerField ? (
-        <View>
-          <DateTimePicker
-            value={pickerValue}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            is24Hour
-            onChange={onChangeTime}
-            locale="tr-TR"
-            themeVariant={colors.statusBar === 'light-content' ? 'dark' : 'light'}
-          />
-          {Platform.OS === 'ios' ? (
-            <Pressable
-              onPress={() => setPickerField(null)}
-              style={[styles.doneBtn, { backgroundColor: colors.mintSoft }]}
-            >
-              <Text style={[styles.doneText, { color: colors.teal }]}>Tamam</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      ) : null}
+      <DateTimePickerSheet
+        visible={Boolean(pickerField)}
+        value={pickerValue}
+        mode="time"
+        onChange={onChangeTime}
+        onClose={() => setPickerField(null)}
+      />
     </ThemedScreen>
   );
 };
@@ -158,17 +142,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     marginTop: 4,
-  },
-  doneBtn: {
-    alignSelf: 'flex-end',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 12,
-  },
-  doneText: {
-    fontSize: 14,
-    fontWeight: '700',
   },
 });
 

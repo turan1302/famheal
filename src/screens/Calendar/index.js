@@ -5,12 +5,11 @@ import {
   TextInput,
   Pressable,
   StyleSheet,
-  Platform,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ThemedScreen from '../../components/ThemedScreen';
+import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import SessionCard from '../../components/SessionCard';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
@@ -123,13 +122,7 @@ const Calendar = () => {
     setRange('day');
   };
 
-  const onPickDate = (event, date) => {
-    if (Platform.OS === 'android') {
-      setShowPicker(false);
-    }
-    if (event.type === 'dismissed' || !date) {
-      return;
-    }
+  const onPickDate = date => {
     jumpTo(date);
   };
 
@@ -162,6 +155,9 @@ const Calendar = () => {
           onChangeText={setQuery}
           placeholder="Danışan, tür veya yıl ara"
           placeholderTextColor={colors.cardTextMuted}
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
           style={[styles.searchInput, { color: colors.cardText }]}
         />
         {query ? (
@@ -248,26 +244,13 @@ const Calendar = () => {
         </Pressable>
       </View>
 
-      {showPicker ? (
-        <View>
-          <DateTimePicker
-            value={selected}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onPickDate}
-            locale="tr-TR"
-            themeVariant={colors.statusBar === 'light-content' ? 'dark' : 'light'}
-          />
-          {Platform.OS === 'ios' ? (
-            <Pressable
-              onPress={() => setShowPicker(false)}
-              style={[styles.doneBtn, { backgroundColor: colors.mintSoft }]}
-            >
-              <Text style={[styles.doneText, { color: colors.teal }]}>Tamam</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      ) : null}
+      <DateTimePickerSheet
+        visible={showPicker}
+        value={selected}
+        mode="date"
+        onChange={onPickDate}
+        onClose={() => setShowPicker(false)}
+      />
 
       <View style={[styles.cal, { backgroundColor: colors.card }]}>
         <View style={styles.weekRow}>
@@ -404,17 +387,6 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 13,
     fontWeight: '600',
-  },
-  doneBtn: {
-    alignSelf: 'flex-end',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 12,
-  },
-  doneText: {
-    fontSize: 14,
-    fontWeight: '700',
   },
   cal: {
     borderRadius: 20,

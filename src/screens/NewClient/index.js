@@ -67,16 +67,18 @@ const NewClient = () => {
       padTabBar={false}
     >
       <Text style={[styles.label, { color: colors.textMuted }]}>Ad soyad</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Örn. Ayşe Yılmaz"
-        placeholderTextColor={colors.cardTextMuted}
-        style={[
-          styles.input,
-          { backgroundColor: colors.card, color: colors.cardText },
-        ]}
-      />
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Örn. Ayşe Yılmaz"
+          placeholderTextColor={colors.cardTextMuted}
+          autoCapitalize="words"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            { backgroundColor: colors.card, color: colors.cardText },
+          ]}
+        />
       <Text style={[styles.label, { color: colors.textMuted }]}>Telefon</Text>
       <TextInput
         value={phone}
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 16,
     paddingHorizontal: 16,
+    paddingVertical: 0,
     fontSize: 15,
     marginBottom: 16,
   },

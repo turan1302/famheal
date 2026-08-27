@@ -1,23 +1,16 @@
 import { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  Platform,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
+import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import SearchableSelect from '../../components/SearchableSelect';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
 import {
-  SESSION_DURATIONS,
   formatDate,
+  formatDurationLabel,
   formatTime,
   sessionDateTime,
 } from '../../common/helpers';
@@ -32,6 +25,7 @@ const NewSession = () => {
   const clients = useAppStore(state => state.clients);
   const sessions = useAppStore(state => state.sessions);
   const sessionTypes = useAppStore(state => state.sessionTypes);
+  const sessionDurations = useAppStore(state => state.sessionDurations);
   const addSession = useAppStore(state => state.addSession);
   const updateSession = useAppStore(state => state.updateSession);
   const existing = useMemo(
@@ -39,13 +33,25 @@ const NewSession = () => {
     [sessionId, sessions],
   );
 
+  const durationOptions = useMemo(() => {
+    const labels = [...sessionDurations]
+      .sort((a, b) => a.minutes - b.minutes)
+      .map(item => formatDurationLabel(item.minutes));
+    if (existing?.duration && !labels.includes(existing.duration)) {
+      return [existing.duration, ...labels];
+    }
+    return labels;
+  }, [existing?.duration, sessionDurations]);
+
   const [clientId, setClientId] = useState(
     existing?.clientId || presetClientId || '',
   );
   const [type, setType] = useState(
     existing?.type || sessionTypes[0]?.name || '',
   );
-  const [duration, setDuration] = useState(existing?.duration || '50 dk');
+  const [duration, setDuration] = useState(
+    existing?.duration || durationOptions[0] || formatDurationLabel(50),
+  );
   const [notes, setNotes] = useState(existing?.notes || '');
   const [date, setDate] = useState(
     existing ? sessionDateTime(existing) : new Date(),
@@ -72,13 +78,7 @@ const NewSession = () => {
     setShowPicker(true);
   };
 
-  const onChange = (event, selectedDate) => {
-    if (Platform.OS === 'android') {
-      setShowPicker(false);
-    }
-    if (event.type === 'dismissed' || !selectedDate) {
-      return;
-    }
+  const onChange = selectedDate => {
     setDate(prev => {
       const next = new Date(prev);
       if (pickerMode === 'date') {
@@ -185,30 +185,36 @@ const NewSession = () => {
       )}
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Süre</Text>
-      <View style={styles.row}>
-        {SESSION_DURATIONS.map(item => {
-          const selected = duration === item;
-          return (
-            <Pressable
-              key={item}
-              onPress={() => setDuration(item)}
-              style={[
-                styles.chip,
-                { backgroundColor: selected ? colors.selectedBg : colors.card },
-              ]}
-            >
-              <Text
+      {durationOptions.length === 0 ? (
+        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+          Ayarlar → Seans süreleri bölümünden süre ekleyin.
+        </Text>
+      ) : (
+        <View style={styles.row}>
+          {durationOptions.map(item => {
+            const selected = duration === item;
+            return (
+              <Pressable
+                key={item}
+                onPress={() => setDuration(item)}
                 style={[
-                  styles.choiceText,
-                  { color: selected ? colors.selectedText : colors.cardText },
+                  styles.chip,
+                  { backgroundColor: selected ? colors.selectedBg : colors.card },
                 ]}
               >
-                {item}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+                <Text
+                  style={[
+                    styles.choiceText,
+                    { color: selected ? colors.selectedText : colors.cardText },
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Tarih</Text>
       <Pressable
@@ -232,27 +238,13 @@ const NewSession = () => {
         </Text>
       </Pressable>
 
-      {showPicker ? (
-        <View>
-          <DateTimePicker
-            value={date}
-            mode={pickerMode}
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            is24Hour
-            onChange={onChange}
-            locale="tr-TR"
-            themeVariant={colors.statusBar === 'light-content' ? 'dark' : 'light'}
-          />
-          {Platform.OS === 'ios' ? (
-            <Pressable
-              onPress={() => setShowPicker(false)}
-              style={[styles.doneBtn, { backgroundColor: colors.mintSoft }]}
-            >
-              <Text style={[styles.doneText, { color: colors.teal }]}>Tamam</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      ) : null}
+      <DateTimePickerSheet
+        visible={showPicker}
+        value={date}
+        mode={pickerMode}
+        onChange={onChange}
+        onClose={() => setShowPicker(false)}
+      />
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Not</Text>
       <TextInput
@@ -304,13 +296,14 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     marginBottom: 16,
   },
   chip: {
-    flex: 1,
     borderRadius: 14,
     paddingVertical: 12,
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
   pickerBtn: {
@@ -325,17 +318,6 @@ const styles = StyleSheet.create({
   pickerText: {
     fontSize: 15,
     fontWeight: '600',
-  },
-  doneBtn: {
-    alignSelf: 'flex-end',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 12,
-  },
-  doneText: {
-    fontSize: 14,
-    fontWeight: '700',
   },
   notes: {
     minHeight: 96,

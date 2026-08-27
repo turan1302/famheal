@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Pressable, Animated, StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable, Animated, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TabBarItem from '../TabBarItem';
@@ -11,9 +11,11 @@ const HIDDEN_TAB_ROUTES = new Set([
   'NewHomework',
   'Homework',
   'SessionTypes',
+  'SessionDurations',
   'LegalText',
   'NotificationTypes',
   'QuietHours',
+  'DataBackup',
 ]);
 const PILL_WIDTH = 42;
 
@@ -73,7 +75,10 @@ const TabBar = ({ state, descriptors, navigation }) => {
         styles.bar,
         {
           height: getTabBarTotalHeight(insets.bottom),
-          paddingBottom: Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(
+            insets.bottom - (Platform.OS === 'ios' ? 4 : 0),
+            Platform.OS === 'ios' ? 6 : 10,
+          ),
           backgroundColor: colors.tabBar,
           shadowColor: colors.shadow,
           opacity: barOpacity,
@@ -136,17 +141,18 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: 'row',
-    paddingTop: 8,
+    paddingTop: Platform.OS === 'ios' ? 4 : 8,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     elevation: 16,
     shadowOpacity: 0.16,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: -4 },
+    zIndex: 20,
   },
   indicator: {
     position: 'absolute',
-    top: 8,
+    top: Platform.OS === 'ios' ? 4 : 8,
     width: PILL_WIDTH,
     height: 32,
     borderRadius: 16,

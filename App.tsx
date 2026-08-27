@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
-import ImmersiveMode from 'react-native-immersive-mode';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Routes from './src/routes';
 import { ThemeProvider, useTheme } from './src/theme';
@@ -18,9 +17,15 @@ const ThemedRoot = () => {
 
 const App = () => {
   useEffect(() => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+    try {
+      const ImmersiveMode = require('react-native-immersive-mode').default;
       ImmersiveMode.setBarMode('FullSticky');
       ImmersiveMode.setBarTranslucent(true);
+    } catch {
+      // Android-only native module
     }
   }, []);
 

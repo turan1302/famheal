@@ -61,6 +61,9 @@ const Clients = () => {
           onChangeText={setQuery}
           placeholder="Ad, telefon veya seans türü ara"
           placeholderTextColor={colors.cardTextMuted}
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
           style={[styles.searchInput, { color: colors.cardText }]}
         />
         {query ? (

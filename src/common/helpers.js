@@ -166,7 +166,47 @@ export const shiftOutOfQuietHours = (date, start, end) => {
   return next;
 };
 
-export const SESSION_DURATIONS = ['50 dk', '60 dk', '90 dk'];
+export const parseDurationMinutes = value => {
+  const minutes = Number(String(value ?? '').replace(/[^\d]/g, ''));
+  return minutes > 0 ? minutes : 0;
+};
+
+export const formatDurationLabel = minutes => {
+  const value = parseDurationMinutes(minutes);
+  return value ? `${value} dk` : '';
+};
+
+export const DEFAULT_SESSION_DURATIONS = [
+  { id: 'd1', minutes: 50 },
+  { id: 'd2', minutes: 60 },
+  { id: 'd3', minutes: 90 },
+];
+
+export const normalizeSessionDurations = list => {
+  if (!Array.isArray(list) || list.length === 0) {
+    return DEFAULT_SESSION_DURATIONS;
+  }
+
+  const seen = new Set();
+  const items = [];
+  list.forEach((item, index) => {
+    const minutes = parseDurationMinutes(
+      item && typeof item === 'object' ? item.minutes ?? item.name : item,
+    );
+    if (!minutes || seen.has(minutes)) {
+      return;
+    }
+    seen.add(minutes);
+    items.push({
+      id: item?.id || `d-${minutes}-${index}`,
+      minutes,
+    });
+  });
+
+  return items.length
+    ? items.sort((a, b) => a.minutes - b.minutes)
+    : DEFAULT_SESSION_DURATIONS;
+};
 
 export const matchesQuery = (value, query) => {
   const q = String(query || '')

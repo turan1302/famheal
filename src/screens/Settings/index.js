@@ -1,15 +1,41 @@
+import { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
 import { useTheme, useThemeColors } from '../../theme';
 import { useNotificationSettings } from '../../hooks/useNotificationSettings';
 import { formatHm } from '../../common/helpers';
+import { useAppStore } from '../../store/useAppStore';
+import VersionNumber from 'react-native-version-number';
+
+const appVersionLabel = () => VersionNumber?.appVersion || '1.0.0';
 
 const THEME_OPTIONS = [
-  { key: 'system', label: 'Sistem', icon: 'phone-portrait-outline' },
-  { key: 'light', label: 'Açık', icon: 'sunny-outline' },
-  { key: 'dark', label: 'Koyu', icon: 'moon-outline' },
+  {
+    key: 'light',
+    label: 'Açık',
+    icon: 'sunny-outline',
+    previewBg: '#F5F9F7',
+    previewText: '#1A3F3C',
+    previewIcon: '#2A5F5A',
+    swatches: ['#FFFFFF', '#DCEFEA', '#7EC8BD'],
+  },
+  {
+    key: 'dark',
+    label: 'Koyu',
+    icon: 'moon-outline',
+    previewBg: '#3E6F69',
+    previewText: '#F5FBFA',
+    previewIcon: '#E9F6F2',
+    swatches: ['#EDF5F2', '#9FD9CF', '#2F635D'],
+  },
+  {
+    key: 'system',
+    label: 'Sistem',
+    icon: 'phone-portrait-outline',
+  },
 ];
 
 const SettingsRow = ({ icon, label, hint, onPress, colors }) => (
@@ -38,6 +64,9 @@ const Settings = () => {
   const { preference, setPreference } = useTheme();
   const navigation = useNavigation();
   const notificationSettings = useNotificationSettings();
+  const resetAllData = useAppStore(state => state.resetAllData);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   const typeHint = [
     notificationSettings.types.session ? 'Seans' : null,
@@ -60,6 +89,22 @@ const Settings = () => {
       <View style={styles.themeRow}>
         {THEME_OPTIONS.map(option => {
           const selected = preference === option.key;
+          const preview =
+            option.key === 'system'
+              ? {
+                  previewBg: colors.card,
+                  previewText: colors.cardText,
+                  previewIcon: colors.teal,
+                  swatches: [colors.background, colors.mintSoft, colors.mint],
+                  iconWrap: colors.mintSoft,
+                }
+              : {
+                  previewBg: option.previewBg,
+                  previewText: option.previewText,
+                  previewIcon: option.previewIcon,
+                  swatches: option.swatches,
+                  iconWrap: option.swatches[0],
+                };
           return (
             <Pressable
               key={option.key}
@@ -67,26 +112,34 @@ const Settings = () => {
               style={({ pressed }) => [
                 styles.themeCard,
                 {
-                  backgroundColor: selected ? colors.selectedBg : colors.card,
-                  opacity: pressed ? 0.88 : 1,
+                  backgroundColor: preview.previewBg,
+                  borderColor: selected ? colors.mint : 'transparent',
+                  opacity: pressed ? 0.92 : 1,
                 },
               ]}
               accessibilityRole="button"
+              accessibilityState={{ selected }}
               accessibilityLabel={option.label}
             >
-              <Icon
-                name={option.icon}
-                size={18}
-                color={selected ? colors.selectedText : colors.cardText}
-              />
-              <Text
+              <View
                 style={[
-                  styles.themeLabel,
-                  { color: selected ? colors.selectedText : colors.cardText },
+                  styles.themeIconWrap,
+                  { backgroundColor: preview.iconWrap },
                 ]}
               >
+                <Icon name={option.icon} size={18} color={preview.previewIcon} />
+              </View>
+              <Text style={[styles.themeLabel, { color: preview.previewText }]}>
                 {option.label}
               </Text>
+              <View style={styles.swatchRow}>
+                {preview.swatches.map(color => (
+                  <View
+                    key={color}
+                    style={[styles.swatch, { backgroundColor: color }]}
+                  />
+                ))}
+              </View>
             </Pressable>
           );
         })}
@@ -102,6 +155,98 @@ const Settings = () => {
         onPress={() => navigation.navigate('SessionTypes')}
         colors={colors}
       />
+      <SettingsRow
+        icon="time-outline"
+        label="Seans süreleri"
+        hint="Seans süresi seçeneklerini ekleyin veya düzenleyin"
+        onPress={() => navigation.navigate('SessionDurations')}
+        colors={colors}
+      />
+      <SettingsRow
+        icon="cloud-download-outline"
+        label="Veri yedekleme"
+        hint="JSON olarak dışa aktarın veya geri yükleyin"
+        onPress={() => navigation.navigate('DataBackup')}
+        colors={colors}
+      />
+
+      {confirmClear ? (
+        <View style={[styles.notice, { backgroundColor: colors.dangerSoft }]}>
+          <Text style={[styles.noticeTitle, { color: colors.cardText }]}>
+            Tüm veriler silinsin mi?
+          </Text>
+          <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
+            Danışan, seans ve ödev kayıtları kaldırılır. Seans türleri varsayılana
+            döner. Bu işlem geri alınamaz; önce JSON yedek alabilirsiniz.
+          </Text>
+          <View style={styles.noticeActions}>
+            <Pressable
+              onPress={() => setConfirmClear(false)}
+              disabled={clearing}
+              style={[styles.sideBtn, { backgroundColor: colors.card }]}
+            >
+              <Text style={[styles.sideText, { color: colors.cardText }]}>
+                Vazgeç
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={async () => {
+                if (clearing) {
+                  return;
+                }
+                setClearing(true);
+                try {
+                  await resetAllData();
+                  setConfirmClear(false);
+                  Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Veriler silindi',
+                    textBody: 'Uygulama boş kuruluma döndü.',
+                  });
+                } catch {
+                  Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Silinemedi',
+                    textBody: 'Kayıtlar temizlenirken bir sorun oluştu.',
+                  });
+                } finally {
+                  setClearing(false);
+                }
+              }}
+              disabled={clearing}
+              style={[
+                styles.sideBtn,
+                styles.flexBtn,
+                { backgroundColor: colors.danger, opacity: clearing ? 0.7 : 1 },
+              ]}
+            >
+              <Text style={[styles.sideText, { color: colors.quickPrimaryText }]}>
+                Tümünü sil
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : (
+        <Pressable
+          onPress={() => setConfirmClear(true)}
+          style={({ pressed }) => [
+            styles.row,
+            { backgroundColor: colors.card, opacity: pressed ? 0.88 : 1 },
+          ]}
+        >
+          <View style={[styles.iconWrap, { backgroundColor: colors.dangerSoft }]}>
+            <Icon name="trash-outline" size={18} color={colors.danger} />
+          </View>
+          <View style={styles.body}>
+            <Text style={[styles.label, { color: colors.danger }]}>
+              Tüm verileri sil
+            </Text>
+            <Text style={[styles.hint, { color: colors.cardTextMuted }]}>
+              Danışan, seans ve ödevleri sıfırlar
+            </Text>
+          </View>
+        </Pressable>
+      )}
 
       <Text style={[styles.sectionLabel, styles.sectionGap, { color: colors.textMuted }]}>
         Bildirimler
@@ -152,6 +297,18 @@ const Settings = () => {
           </Text>
         </View>
       </View>
+
+      <View style={[styles.row, { backgroundColor: colors.card }]}>
+        <View style={[styles.iconWrap, { backgroundColor: colors.mintSoft }]}>
+          <Icon name="information-circle-outline" size={18} color={colors.teal} />
+        </View>
+        <View style={styles.body}>
+          <Text style={[styles.label, { color: colors.cardText }]}>Sürüm</Text>
+          <Text style={[styles.hint, { color: colors.cardTextMuted }]}>
+            FamHeal {appVersionLabel()}
+          </Text>
+        </View>
+      </View>
     </ThemedScreen>
   );
 };
@@ -170,15 +327,37 @@ const styles = StyleSheet.create({
   },
   themeCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 20,
     paddingVertical: 14,
+    paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 8,
+    overflow: 'hidden',
+    borderWidth: 2,
+    minHeight: 118,
+  },
+  themeIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   themeLabel: {
     fontSize: 13,
     fontWeight: '700',
+  },
+  swatchRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  swatch: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(15, 61, 58, 0.12)',
   },
   sectionGap: {
     marginTop: 8,
@@ -209,6 +388,39 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     marginTop: 2,
+  },
+  notice: {
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 10,
+  },
+  noticeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  noticeBody: {
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  noticeActions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  sideBtn: {
+    height: 44,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flexBtn: {
+    flex: 1,
+  },
+  sideText: {
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
 

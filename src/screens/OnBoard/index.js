@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
-  StatusBar,
   FlatList,
   Pressable,
 } from 'react-native';
@@ -12,6 +11,7 @@ import { setOnboardingCompleted } from '../../common/onboarding';
 import { replace } from '../../common/NavigationService';
 import useDimensions from '../../hooks/useDimensions';
 import { useThemeColors } from '../../theme';
+import AppStatusBar from '../../components/AppStatusBar';
 import styles from './styles';
 
 const SLIDES = [
@@ -91,11 +91,7 @@ const OnBoard = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar
-        barStyle={colors.statusBar}
-        backgroundColor="transparent"
-        translucent
-      />
+      <AppStatusBar barStyle={colors.statusBar} />
 
       <View
         style={[

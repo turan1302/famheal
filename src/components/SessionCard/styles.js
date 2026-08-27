@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     padding: 14,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   avatar: {
     width: 48,

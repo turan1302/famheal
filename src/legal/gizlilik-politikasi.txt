@@ -40,9 +40,11 @@ Uygulama, yaklaşan seans için yaklaşık 15 dakika önce yerel bildirim gönde
 
 FamHeal, girdiğiniz danışan ve seans bilgilerini reklam, analitik veya pazarlama amacıyla paylaşmaz. İşletim sisteminin bildirim ve depolama hizmetleri, uygulamanın çalışması için cihaz düzeyinde kullanılabilir. İnternet izni sistem gereksinimleriyle bulunabilir; danışan kayıtlarının uzak bir hesaba aktarılması bu politika kapsamında yapılmaz.
 
+Ayarlar içindeki JSON dışa aktarma, yedeği sizin seçtiğiniz bir uygulamaya (Dosyalar, Drive, e-posta vb.) iletir. Bu paylaşım yalnızca sizin başlatmanızla olur.
+
 7. SAKLAMA VE SİLME
 
-Kayıtlar, siz silene dek cihazda kalır. Tek bir ödev, seans türü veya ilgili kayıt uygulamadan silinebilir. Uygulamayı cihazdan kaldırmak, cihazda tutulan FamHeal verilerinin de silinmesine yol açar.
+Kayıtlar, siz silene dek cihazda kalır. Tek bir ödev, seans türü veya ilgili kayıt uygulamadan silinebilir. Uygulamayı cihazdan kaldırmak, cihazda tutulan FamHeal verilerinin de silinmesine yol açar. Yeniden yüklemeden önce JSON yedeği alırsanız kayıtları içe aktararak geri yükleyebilirsiniz.
 
 8. GÜVENLİK
 

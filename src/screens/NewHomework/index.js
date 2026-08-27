@@ -1,17 +1,10 @@
 import { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  Platform,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
+import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import SearchableSelect from '../../components/SearchableSelect';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
@@ -66,13 +59,7 @@ const NewHomework = () => {
     [clients],
   );
 
-  const onChangeDue = (event, selectedDate) => {
-    if (Platform.OS === 'android') {
-      setShowPicker(false);
-    }
-    if (event.type === 'dismissed' || !selectedDate) {
-      return;
-    }
+  const onChangeDue = selectedDate => {
     setDue(selectedDate);
   };
 
@@ -229,26 +216,13 @@ const NewHomework = () => {
         </Text>
       </Pressable>
 
-      {showPicker ? (
-        <View>
-          <DateTimePicker
-            value={due}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeDue}
-            locale="tr-TR"
-            themeVariant={colors.statusBar === 'light-content' ? 'dark' : 'light'}
-          />
-          {Platform.OS === 'ios' ? (
-            <Pressable
-              onPress={() => setShowPicker(false)}
-              style={[styles.doneBtn, { backgroundColor: colors.mintSoft }]}
-            >
-              <Text style={[styles.doneText, { color: colors.teal }]}>Tamam</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      ) : null}
+      <DateTimePickerSheet
+        visible={showPicker}
+        value={due}
+        mode="date"
+        onChange={onChangeDue}
+        onClose={() => setShowPicker(false)}
+      />
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Not</Text>
       <TextInput
@@ -334,6 +308,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 16,
     paddingHorizontal: 16,
+    paddingVertical: 0,
     fontSize: 15,
     marginBottom: 16,
   },
@@ -359,17 +334,6 @@ const styles = StyleSheet.create({
   pickerText: {
     fontSize: 15,
     fontWeight: '600',
-  },
-  doneBtn: {
-    alignSelf: 'flex-end',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    marginBottom: 12,
-  },
-  doneText: {
-    fontSize: 14,
-    fontWeight: '700',
   },
   notes: {
     minHeight: 88,

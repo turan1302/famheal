@@ -13,6 +13,22 @@ import {
 
 const CHANNEL_ID = 'famheal-sessions';
 
+const iosNotification = {
+  sound: 'default',
+  foregroundPresentationOptions: {
+    badge: true,
+    sound: true,
+    banner: true,
+    list: true,
+  },
+};
+
+const timestampTrigger = timestamp => ({
+  type: TriggerType.TIMESTAMP,
+  timestamp,
+  ...(Platform.OS === 'android' ? { alarmManager: { allowWhileIdle: true } } : {}),
+});
+
 export const DEFAULT_NOTIFICATION_SETTINGS = {
   types: {
     session: true,
@@ -50,7 +66,11 @@ const applyQuietHours = (date, prefs) => {
 
 export async function ensureNotificationSetup() {
   try {
-    await notifee.requestPermission();
+    await notifee.requestPermission({
+      alert: true,
+      sound: true,
+      badge: true,
+    });
 
     if (Platform.OS === 'android') {
       await notifee.createChannel({
@@ -111,12 +131,9 @@ export async function scheduleSessionReminder(session, settings) {
           channelId: CHANNEL_ID,
           pressAction: { id: 'default' },
         },
+        ios: iosNotification,
       },
-      {
-        type: TriggerType.TIMESTAMP,
-        timestamp: reminderAt.getTime(),
-        alarmManager: { allowWhileIdle: true },
-      },
+      timestampTrigger(reminderAt.getTime()),
     );
 
     return true;
@@ -155,12 +172,9 @@ export async function scheduleHomeworkReminder(item, settings) {
           channelId: CHANNEL_ID,
           pressAction: { id: 'default' },
         },
+        ios: iosNotification,
       },
-      {
-        type: TriggerType.TIMESTAMP,
-        timestamp: reminderAt.getTime(),
-        alarmManager: { allowWhileIdle: true },
-      },
+      timestampTrigger(reminderAt.getTime()),
     );
 
     return true;
@@ -191,6 +205,14 @@ export async function scheduleUpcomingHomeworkReminders(
     );
   } catch {
     // native module or permission missing
+  }
+}
+
+export async function cancelAllReminders() {
+  try {
+    await notifee.cancelAllNotifications();
+  } catch {
+    // native module unavailable
   }
 }
 

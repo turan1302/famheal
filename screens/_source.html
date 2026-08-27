@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1242, height=2688" />
+  <title>FamHeal store screenshot</title>
+  <style>
+    @font-face {
+      font-family: RobotoLocal;
+      src: local("Roboto"), local("Roboto-Regular");
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1242px;
+      height: 2688px;
+      overflow: hidden;
+      background: #12332f;
+    }
+    body {
+      font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    }
+    body.android {
+      font-family: RobotoLocal, Roboto, "Google Sans", Arial, sans-serif;
+    }
+    #stage {
+      width: 1242px;
+      height: 2688px;
+      position: relative;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .copy {
+      position: absolute;
+      left: 88px;
+      right: 88px;
+      top: 92px;
+      z-index: 2;
+    }
+    .kicker {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3.2px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      opacity: 0.78;
+    }
+    .headline {
+      font-size: 68px;
+      font-weight: 800;
+      letter-spacing: -1.4px;
+      line-height: 1.08;
+      margin-bottom: 22px;
+    }
+    .sub {
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.35;
+      max-width: 980px;
+      opacity: 0.88;
+    }
+    .phone-wrap {
+      position: absolute;
+      left: 50%;
+      bottom: 56px;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+    .phone {
+      width: 940px;
+      height: 1988px;
+      padding: 14px;
+      background: #111513;
+      box-shadow: 0 40px 80px rgba(12, 32, 28, 0.35);
+      position: relative;
+    }
+    body.ios .phone {
+      border-radius: 86px;
+      padding: 16px;
+    }
+    body.android .phone {
+      border-radius: 52px;
+    }
+    .screen {
+      width: 908px;
+      height: 1956px;
+      overflow: hidden;
+      background: #F5F9F7;
+      position: relative;
+    }
+    body.ios .screen { border-radius: 70px; }
+    body.android .screen { border-radius: 38px; }
+    .island {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 186px;
+      height: 34px;
+      background: #0b0d0c;
+      border-radius: 20px;
+      z-index: 20;
+    }
+    .punch {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 22px;
+      background: #0b0d0c;
+      border-radius: 50%;
+      z-index: 20;
+    }
+    .app {
+      width: 390px;
+      height: 844px;
+      transform: scale(2.3282);
+      transform-origin: top left;
+      background: #F5F9F7;
+      color: #1A3F3C;
+      position: relative;
+    }
+    .status {
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 22px 8px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .status-right { display: flex; gap: 6px; align-items: center; }
+    .dot-ic { width: 16px; height: 10px; display: inline-block; }
+    .content {
+      padding: 6px 18px 0;
+      height: 716px;
+      overflow: hidden;
+    }
+    .content.no-tab { height: 800px; }
+    .brand-row, .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .brand { font-size: 22px; font-weight: 800; color: #1A4A46; }
+    .title { font-size: 20px; font-weight: 800; color: #1A3F3C; }
+    .icon-btn {
+      width: 34px; height: 34px; border-radius: 17px;
+      display: grid; place-items: center; position: relative;
+    }
+    .bell-dot {
+      position: absolute; top: 6px; right: 7px; width: 7px; height: 7px;
+      background: #C45C6A; border: 1.5px solid #F5F9F7; border-radius: 50%;
+    }
+    .hello { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
+    .muted { color: #5E7A75; font-weight: 500; }
+    .grid2 {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin: 14px 0 10px;
+    }
+    .card {
+      background: #fff; border-radius: 18px; padding: 12px;
+      box-shadow: 0 2px 8px rgba(26, 63, 60, 0.06);
+    }
+    .stat-ic {
+      width: 28px; height: 28px; border-radius: 9px;
+      display: grid; place-items: center; margin-bottom: 10px;
+    }
+    .stat-v { font-size: 26px; font-weight: 800; letter-spacing: -0.4px; }
+    .stat-l { font-size: 9px; font-weight: 700; color: #6A827E; letter-spacing: 0.3px; margin-top: 2px; }
+    .section {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin: 12px 0 8px;
+    }
+    .section h3 { font-size: 15px; font-weight: 800; }
+    .see { font-size: 10px; font-weight: 800; color: #5E7A75; letter-spacing: 0.4px; }
+    .pills { display: flex; gap: 7px; margin-bottom: 12px; }
+    .pill {
+      border-radius: 12px; padding: 8px 11px; font-size: 10px; font-weight: 800;
+      letter-spacing: 0.3px; background: #fff; color: #1A3F3C;
+    }
+    .pill.on { background: #2A5F5A; color: #fff; }
+    .sess {
+      display: flex; gap: 10px; align-items: center;
+      background: #fff; border-radius: 16px; padding: 10px; margin-bottom: 8px;
+    }
+    .av {
+      width: 38px; height: 38px; border-radius: 19px;
+      display: grid; place-items: center; font-weight: 800; font-size: 12px; flex-shrink: 0;
+    }
+    .sess h4 { font-size: 13px; font-weight: 800; }
+    .sess p { font-size: 11px; color: #6A827E; margin-top: 2px; }
+    .badge {
+      font-size: 8px; font-weight: 800; letter-spacing: 0.3px;
+      border-radius: 8px; padding: 3px 6px; margin-left: auto; white-space: nowrap;
+    }
+    .search {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff; border-radius: 14px; padding: 10px 12px; margin-bottom: 10px;
+      color: #6A827E; font-size: 12px;
+    }
+    .chips { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .chip {
+      background: #fff; border-radius: 12px; padding: 7px 10px;
+      font-size: 11px; font-weight: 700;
+    }
+    .chip.on { background: #2A5F5A; color: #fff; }
+    .hint { font-size: 12px; color: #5E7A75; margin-bottom: 10px; }
+    .row {
+      display: flex; gap: 10px; align-items: center;
+      background: #fff; border-radius: 16px; padding: 11px; margin-bottom: 8px;
+    }
+    .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .weeks { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+    .wd { font-size: 9px; font-weight: 700; color: #6A827E; padding: 4px 0; }
+    .day {
+      height: 28px; display: grid; place-items: center; font-size: 11px; font-weight: 650;
+      border-radius: 10px; position: relative;
+    }
+    .day.on { background: #2A5F5A; color: #fff; }
+    .day .mark {
+      position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 2px; background: #7EC8BD;
+    }
+    .day.on .mark { background: #fff; }
+    .hero {
+      background: #2A5F5A; color: #fff; border-radius: 18px; padding: 14px; margin-bottom: 10px;
+    }
+    .hero b { font-size: 11px; opacity: 0.8; }
+    .hero h2 { font-size: 26px; font-weight: 800; margin: 4px 0; }
+    .hero p { font-size: 11px; opacity: 0.85; }
+    .bars { display: flex; align-items: flex-end; gap: 7px; height: 72px; margin: 8px 0 4px; }
+    .bar { flex: 1; background: #DCE6E3; border-radius: 8px 8px 4px 4px; position: relative; }
+    .bar span {
+      position: absolute; left: 0; right: 0; bottom: 0; background: #2A5F5A;
+      border-radius: 8px 8px 4px 4px;
+    }
+    .bar.today span { background: #7EC8BD; }
+    .bl { display: flex; justify-content: space-between; font-size: 9px; color: #6A827E; }
+    .type-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .track { height: 7px; background: #DCE6E3; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
+    .track i { display: block; height: 100%; background: #2A5F5A; border-radius: 4px; }
+    .note {
+      background: #fff; border-radius: 16px; padding: 12px; font-size: 12px; line-height: 1.45; color: #3F5F5A;
+    }
+    .splash {
+      height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #F5F9F7;
+    }
+    .splash img { width: 168px; height: 168px; }
+    .tabbar {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 84px; background: #fff;
+      display: flex; padding: 8px 4px 18px;
+      border-top-left-radius: 22px; border-top-right-radius: 22px;
+    }
+    body.android .tabbar { height: 88px; padding-bottom: 14px; }
+    .tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: #8AA19C; font-size: 9px; font-weight: 650;
+    }
+    .tab .ic {
+      width: 28px; height: 28px; border-radius: 14px;
+      display: grid; place-items: center;
+    }
+    .tab.on { color: #1F4A46; font-weight: 800; }
+    .tab.on .ic { background: #D4EFE8; }
+    .fab {
+      position: absolute; right: 18px; bottom: 96px; width: 46px; height: 46px;
+      border-radius: 23px; background: #2A5F5A; color: #fff;
+      display: grid; place-items: center; font-size: 26px; font-weight: 400;
+      box-shadow: 0 8px 16px rgba(42, 95, 90, 0.28);
+    }
+    .home-ind {
+      position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+      width: 110px; height: 4px; background: #1A3F3C; border-radius: 2px; opacity: 0.35; z-index: 21;
+    }
+    .nav-android {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 18px;
+      display: flex; justify-content: center; gap: 36px; align-items: center; z-index: 21;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const os = params.get("os") === "android" ? "android" : "ios";
+    const slide = Number(params.get("slide") || "1");
+    document.body.classList.add(os);
+
+    const I = {
+      home: '<path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+      people: '<path d="M9 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm7.5 0a2.5 2.5 0 1 0-2.5-2.5 2.5 2.5 0 0 0 2.5 2.5zM3.5 19v-1.2A3.8 3.8 0 0 1 7.3 14h3.4a3.8 3.8 0 0 1 3.8 3.8V19M14 14.2a3.4 3.4 0 0 1 3.2-.2A3.5 3.5 0 0 1 20 17.4V19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+      cal: '<rect x="4" y="6" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 4v4M16 4v4M4 10h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+      chart: '<path d="M5 19V10M10 19V6M15 19v-7M20 19V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      gear: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.2M12 18.3V20.5M4.8 7.2l1.9 1.1M17.3 15.7l1.9 1.1M4.8 16.8l1.9-1.1M17.3 8.3l1.9-1.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+      bell: '<path d="M6 16h12l-1-2v-3a5 5 0 0 0-10 0v3zM10 17.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+      search: '<circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m20 20-4.2-4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+      back: '<path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+      plus: '<path d="M12 6v12M6 12h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      loc: '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+      trash: '<path d="M5 8h14M9 8V6h6v2M8 8l1 12h6l1-12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      pen: '<path d="M5 16.5 15.5 6l2.5 2.5L7.5 19H5zM14 7.5l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      trend: '<path d="M4 17 9 11l4 3 7-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 5h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      shield: '<path d="M12 4 6 6.5V12c0 4 2.6 6.6 6 8 3.4-1.4 6-4 6-8V6.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      cloud: '<path d="M8 17h9a4 4 0 0 0 .2-8 5.5 5.5 0 0 0-10.4 1.6A3.5 3.5 0 0 0 8 17z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+      info: '<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 11v5M12 8h.01" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+    };
+    const svg = (name, size, color) =>
+      `<svg width="${size}" height="${size}" viewBox="0 0 24 24" style="color:${color}">${I[name]}</svg>`;
+
+    const slides = {
+      1: {
+        bg: "#1F4A46", fg: "#F5FBFA", sub: "#D4E6E1",
+        kicker: "FamHeal",
+        title: "Danışmanlık pratiğiniz,<br>sakin bir düzende",
+        subtext: "Danışan, seans ve ödev takibini tek uygulamada, hesabınız olmadan yürütün.",
+        blob: "rgba(126,200,189,.18)",
+        tab: -1,
+      },
+      2: {
+        bg: "#F3F7F5", fg: "#1A3F3C", sub: "#3F5F5A",
+        kicker: "Ana sayfa",
+        title: "Gününüz<br>tek bakışta",
+        subtext: "Bugünkü seanslar, aktif danışanlar ve ödevler ana sayfada sizi karşılar.",
+        blob: "rgba(42,95,90,.10)",
+        tab: 0,
+      },
+      3: {
+        bg: "#EDF5F2", fg: "#1A3F3C", sub: "#3F5F5A",
+        kicker: "Danışanlar",
+        title: "Danışanlarınız<br>her zaman elinizde",
+        subtext: "Arayın, seans türüne göre filtreleyin ve yeni kaydı saniyeler içinde ekleyin.",
+        blob: "rgba(42,95,90,.10)",
+        tab: 1,
+      },
+      4: {
+        bg: "#2A5F5A", fg: "#F5FBFA", sub: "#D4E6E1",
+        kicker: "Takvim",
+        title: "Takviminiz net,<br>seansınız yerinde",
+        subtext: "Ay görünümü ve seçili günün programı birlikte. Planlamak kolaylaşır.",
+        blob: "rgba(255,247,236,.10)",
+        tab: 2,
+      },
+      5: {
+        bg: "#F5F9F7", fg: "#1A3F3C", sub: "#3F5F5A",
+        kicker: "Seans kaydı",
+        title: "Seans notları<br>kaybolmaz",
+        subtext: "Tür, süre, durum ve görüşme notları aynı kayıtta durur.",
+        blob: "rgba(42,95,90,.10)",
+        tab: -1,
+      },
+      6: {
+        bg: "#3E6F69", fg: "#F5FBFA", sub: "#D9EBE6",
+        kicker: "Danışan ödevleri",
+        title: "Ödev takibi<br>sade ve net",
+        subtext: "Atayın, teslim gününü izleyin, gerektiğinde hızla düzenleyin.",
+        blob: "rgba(237,245,242,.12)",
+        tab: -1,
+      },
+      7: {
+        bg: "#F5F9F7", fg: "#1A3F3C", sub: "#3F5F5A",
+        kicker: "Raporlar",
+        title: "Pratiğinizi<br>rakamlarla görün",
+        subtext: "Haftalık yoğunluk, seans türleri ve aylık özet tek ekranda.",
+        blob: "rgba(42,95,90,.10)",
+        tab: 3,
+      },
+      8: {
+        bg: "#214E4A", fg: "#F5FBFA", sub: "#D4E6E1",
+        kicker: "Gizlilik",
+        title: "Veriler bu<br>cihazda kalır",
+        subtext: "Hesap yok, giriş yok. Kayıtlar yalnızca sizin telefonunuzda tutulur.",
+        blob: "rgba(126,200,189,.16)",
+        tab: 4,
+      },
+    };
+
+    const tabs = [
+      ["home", "Ana Sayfa"],
+      ["people", "Danışanlar"],
+      ["cal", "Takvim"],
+      ["chart", "Raporlar"],
+      ["gear", "Ayarlar"],
+    ];
+
+    function statusBar() {
+      if (os === "ios") {
+        return `<div class="status"><span>9:41</span><div class="status-right">${svg("chart", 12, "#1A3F3C")}<span style="font-size:11px">5G</span>
+          <span style="width:22px;height:11px;border:1.4px solid #1A3F3C;border-radius:3px;display:inline-block;position:relative"><i style="position:absolute;left:2px;top:2px;bottom:2px;width:14px;background:#1A3F3C;border-radius:1px;display:block"></i></span>
+        </div></div>`;
+      }
+      return `<div class="status"><span>21:41</span><div class="status-right" style="font-size:12px;gap:8px"><span>LTE</span>
+        <span style="width:20px;height:10px;border:1.3px solid #1A3F3C;border-radius:2px;display:inline-block"></span>
+      </div></div>`;
+    }
+
+    function tabbar(active) {
+      if (active < 0) return os === "ios" ? `<div class="home-ind"></div>` : "";
+      const items = tabs.map((t, i) => {
+        const on = i === active;
+        return `<div class="tab ${on ? "on" : ""}"><div class="ic">${svg(t[0], 16, on ? "#1F4A46" : "#8AA19C")}</div>${t[1]}</div>`;
+      }).join("");
+      return `<div class="tabbar">${items}</div>${os === "ios" ? `<div class="home-ind"></div>` : ""}`;
+    }
+
+    function screenUI() {
+      if (slide === 1) {
+        return `<div class="splash">
+          <img src="../src/assets/famheal-icon.png" alt="FamHeal" />
+        </div>`;
+      }
+      if (slide === 2) {
+        return `${statusBar()}
+          <div class="content">
+            <div class="brand-row"><div class="brand">FamHeal</div><div class="icon-btn">${svg("bell", 18, "#1A3F3C")}<span class="bell-dot"></span></div></div>
+            <div class="hello">Merhaba 👋</div>
+            <div class="muted" style="font-size:13px;margin-bottom:12px">Bugün 3 seansınız var.</div>
+            <div class="grid2">
+              ${[["3","BUGÜNKÜ SEANSLAR","#DCEFEA","#2A5F5A","cal"],["12","AKTİF DANIŞAN","#2A5F5A","#fff","people"],["5","DANIŞAN ÖDEVLERİ","#F7DCE0","#C45C6A","pen"],["18","BU AY SEANSLAR","#DCE6E3","#4E6A66","trend"]].map(([v,l,bg,c,ic]) =>
+                `<div class="card"><div class="stat-ic" style="background:${bg};color:${c}">${svg(ic, 14, c)}</div><div class="stat-v">${v}</div><div class="stat-l">${l}</div></div>`).join("")}
+            </div>
+            <div class="pills"><div class="pill on">+ YENİ DANIŞAN</div><div class="pill">YENİ SEANS</div><div class="pill">RAPOR</div></div>
+            <div class="section"><h3>Bugünkü Seanslar</h3><span class="see">TÜMÜNÜ GÖR</span></div>
+            ${sess("EK","Elif Kaya","Bireysel Terapi","Bugün · 10:00  ·  50 dk","YAKLAŞIYOR","#2A5F5A","#fff","#2A5F5A","#fff")}
+            ${sess("MÇ","Mehmet Çelik","Çift Terapisi","Bugün · 13:30  ·  60 dk","BEKLEYEN","#DCEFEA","#1F4A46","#DCEFEA","#1F4A46")}
+            ${sess("DA","Deniz Arslan","Aile Danışmanlığı","Bugün · 16:00  ·  50 dk","BEKLEYEN","#DCEFEA","#1F4A46","#DCEFEA","#1F4A46")}
+          </div>${tabbar(0)}`;
+      }
+      if (slide === 3) {
+        return `${statusBar()}
+          <div class="content">
+            <div class="nav-row"><div class="title">Danışanlar</div></div>
+            <div class="search">${svg("search", 16, "#6A827E")} Ad, telefon veya seans türü ara</div>
+            <div class="chips"><div class="chip on">Tümü</div><div class="chip">Bireysel Terapi</div><div class="chip">Çift Terapisi</div></div>
+            <div class="hint">12 / 12 danışan</div>
+            ${client("EK","Elif Kaya","Bireysel Terapi","Son seans 21 Ağu","#DCEFEA","#1A3F3C")}
+            ${client("MÇ","Mehmet Çelik","Çift Terapisi","Son seans 27 Ağu","#2A5F5A","#fff")}
+            ${client("DA","Deniz Arslan","Aile Danışmanlığı","Son seans 19 Ağu","#DCEFEA","#1A3F3C")}
+            ${client("ZY","Zeynep Yıldız","Bireysel Terapi","Son seans 12 Ağu","#2A5F5A","#fff")}
+            ${client("AO","Ali Öztürk","Çift Terapisi","Son seans 8 Ağu","#DCEFEA","#1A3F3C")}
+          </div>
+          <div class="fab">+</div>
+          ${tabbar(1)}`;
+      }
+      if (slide === 4) {
+        const days = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
+        const cells = [null,null,null,null,null,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+        const marked = new Set([8,12,19,21,27]);
+        return `${statusBar()}
+          <div class="content">
+            <div class="nav-row"><div class="title">Takvim</div>${svg("plus", 22, "#1A3F3C")}</div>
+            <div class="cal-head"><span style="font-weight:800">Ağustos 2026</span><span class="muted" style="font-size:12px">Bugün</span></div>
+            <div class="card" style="padding:10px;margin-bottom:10px">
+              <div class="weeks">${days.map(d => `<div class="wd">${d}</div>`).join("")}
+                ${cells.map(d => {
+                  if (!d) return `<div></div>`;
+                  const on = d === 27;
+                  return `<div class="day ${on ? "on" : ""}">${d}${marked.has(d) ? `<span class="mark"></span>` : ""}</div>`;
+                }).join("")}
+              </div>
+            </div>
+            <div class="section"><h3>Bugünkü seanslar</h3></div>
+            ${sess("EK","Elif Kaya","Bireysel Terapi","27 Ağu 2026 · 10:00  ·  50 dk","YAKLAŞIYOR","#2A5F5A","#fff","#2A5F5A","#fff")}
+            ${sess("MÇ","Mehmet Çelik","Çift Terapisi","27 Ağu 2026 · 13:30  ·  60 dk","BEKLEYEN","#DCEFEA","#1F4A46","#DCEFEA","#1F4A46")}
+            ${sess("DA","Deniz Arslan","Aile Danışmanlığı","27 Ağu 2026 · 16:00  ·  50 dk","BEKLEYEN","#DCEFEA","#1F4A46","#DCEFEA","#1F4A46")}
+          </div>${tabbar(2)}`;
+      }
+      if (slide === 5) {
+        return `${statusBar()}
+          <div class="content no-tab">
+            <div class="nav-row">${svg("back", 20, "#1A3F3C")}<div class="title">Seans</div><span style="width:20px"></span></div>
+            <div class="card" style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+              <div class="av" style="background:#2A5F5A;color:#fff">EK</div>
+              <div><h4 style="font-size:16px;font-weight:800">Elif Kaya</h4>
+              <p class="muted" style="font-size:12px;margin-top:3px">${svg("loc", 12, "#6A827E")} Bireysel Terapi</p></div>
+            </div>
+            <div class="muted" style="font-size:12px;margin-bottom:10px">27 Ağu 2026 · 10:00  ·  50 dk</div>
+            <div style="font-size:12px;font-weight:700;color:#5E7A75;margin-bottom:8px">Durum</div>
+            <div class="chips">
+              <div class="chip on">Planlandı</div>
+              <div class="chip">Tamamlandı</div>
+              <div class="chip">İptal</div>
+              <div class="chip">Gelmedi</div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#5E7A75;margin:8px 0">Seans notu</div>
+            <div class="note">İlk görüşmede hedefler netleştirildi. Uyku düzeni ve haftalık rutin üzerine çalışılacak. Bir sonraki seansta duygu günlüğü değerlendirilecek.</div>
+            <div style="font-size:12px;font-weight:700;color:#5E7A75;margin:12px 0 8px">Bağlı ödev</div>
+            <div class="row"><div style="flex:1"><div style="font-weight:800;font-size:13px">Duygu günlüğü</div>
+              <div class="muted" style="font-size:11px;margin-top:3px">Teslim 3 Eyl</div></div></div>
+          </div>${tabbar(-1)}`;
+      }
+      if (slide === 6) {
+        return `${statusBar()}
+          <div class="content no-tab">
+            <div class="nav-row">${svg("back", 20, "#1A3F3C")}<div class="title">Danışan Ödevleri</div><span style="width:20px"></span></div>
+            <div class="hint">Danışanlarınıza verdiğiniz ödevleri buradan düzenleyin.</div>
+            ${hw("Duygu günlüğü","Elif Kaya","Teslim 3 Eyl")}
+            ${hw("Nefes egzersizi","Mehmet Çelik","Teslim 29 Ağu")}
+            ${hw("Aile iletişim listesi","Deniz Arslan","Teslim 1 Eyl")}
+            ${hw("Uyku rutini kartı","Zeynep Yıldız","Teslim 5 Eyl")}
+            ${hw("Haftalık hedef notu","Ali Öztürk","Teslim 28 Ağu")}
+          </div>
+          <div class="fab" style="bottom:28px">+</div>
+          ${tabbar(-1)}`;
+      }
+      if (slide === 7) {
+        return `${statusBar()}
+          <div class="content">
+            <div class="nav-row"><div class="title">Raporlar</div></div>
+            <div class="hero"><b>Ağustos 2026</b><h2>18 seans</h2><p>16 sa 20 dk seans süresi  ·  11 tamamlandı</p></div>
+            <div class="grid2">
+              <div class="card"><div class="stat-v">12</div><div class="stat-l">AKTİF DANIŞAN</div></div>
+              <div class="card"><div class="stat-v">5</div><div class="stat-l">AÇIK ÖDEV</div></div>
+            </div>
+            <div class="card">
+              <div style="font-weight:800;font-size:13px;margin-bottom:4px">Bu hafta</div>
+              <div class="bars">
+                ${[["28px",false],["50px",false],["40px",false],["64px",true],["24px",false],["16px",false],["12px",false]].map(([h,t]) =>
+                  `<div class="bar ${t ? "today" : ""}"><span style="height:${h}"></span></div>`).join("")}
+              </div>
+              <div class="bl"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+            </div>
+            <div class="card" style="margin-top:8px">
+              <div class="type-row"><span>Bireysel Terapi</span><b>8</b></div><div class="track"><i style="width:80%"></i></div>
+              <div class="type-row"><span>Çift Terapisi</span><b>6</b></div><div class="track"><i style="width:60%"></i></div>
+              <div class="type-row"><span>Aile Danışmanlığı</span><b>4</b></div><div class="track"><i style="width:40%"></i></div>
+            </div>
+          </div>${tabbar(3)}`;
+      }
+      return `${statusBar()}
+        <div class="content">
+          <div class="nav-row"><div class="title">Ayarlar</div></div>
+          <div class="hint" style="margin-bottom:8px">Görünüm</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <div class="card" style="flex:1;text-align:center;border:2px solid #7EC8BD"><div style="font-size:12px;font-weight:800">Açık</div></div>
+            <div class="card" style="flex:1;text-align:center;background:#3E6F69;color:#F5FBFA"><div style="font-size:12px;font-weight:800">Koyu</div></div>
+            <div class="card" style="flex:1;text-align:center"><div style="font-size:12px;font-weight:800">Sistem</div></div>
+          </div>
+          ${setRow("shield","Veriler cihazda","Hesap veya giriş yoktur. Kayıtlar bu cihazda tutulur.")}
+          ${setRow("cloud","Veri yedekleme","JSON olarak dışa aktarın veya geri yükleyin")}
+          ${setRow("bell","Bildirimler","Seans hatırlatmaları bu cihazda")}
+          ${setRow("info","Sürüm","FamHeal 1.0.0")}
+        </div>${tabbar(4)}`;
+    }
+
+    function sess(ini, name, type, when, badge, abg, ac, bbg, bc) {
+      return `<div class="sess">
+        <div class="av" style="background:${abg};color:${ac}">${ini}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px"><h4>${name}</h4>
+            <span class="badge" style="background:${bbg};color:${bc}">${badge}</span></div>
+          <p>${type}</p><p>${when}</p>
+        </div>
+      </div>`;
+    }
+    function client(ini, name, type, last, bg, c) {
+      return `<div class="row"><div class="av" style="background:${bg};color:${c}">${ini}</div>
+        <div style="flex:1"><div style="font-weight:800;font-size:14px">${name}</div>
+        <div class="muted" style="font-size:11px;margin-top:2px">${type}  ·  ${last}</div></div></div>`;
+    }
+    function hw(title, client, due) {
+      return `<div class="row"><div style="flex:1"><div style="font-weight:800;font-size:14px">${title}</div>
+        <div class="muted" style="font-size:12px;margin-top:3px">${client}  ·  ${due}</div></div>
+        ${svg("trash", 16, "#C45C6A")}</div>`;
+    }
+    function setRow(ic, t, h) {
+      return `<div class="row"><div class="stat-ic" style="background:#DCEFEA;margin:0">${svg(ic, 14, "#2A5F5A")}</div>
+        <div><div style="font-weight:800;font-size:13px">${t}</div>
+        <div class="muted" style="font-size:11px;margin-top:2px">${h}</div></div></div>`;
+    }
+
+    const s = slides[slide];
+    document.getElementById("stage").innerHTML = `
+      <div class="blob" style="width:520px;height:520px;background:${s.blob};top:-80px;right:-120px"></div>
+      <div class="blob" style="width:380px;height:380px;background:${s.blob};bottom:420px;left:-140px"></div>
+      <div class="copy" style="color:${s.fg}">
+        <div class="kicker">${s.kicker}</div>
+        <div class="headline">${s.title}</div>
+        <div class="sub" style="color:${s.sub}">${s.subtext}</div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="screen">
+            ${os === "ios" ? `<div class="island"></div>` : `<div class="punch"></div>`}
+            <div class="app">${screenUI()}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById("stage").style.background = s.bg;
+    document.body.style.background = s.bg;
+  </script>
+</body>
+</html>

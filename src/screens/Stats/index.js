@@ -9,16 +9,12 @@ import {
   isSameDay,
   isSameMonth,
   homeworkStatus,
+  parseDurationMinutes,
   sessionDateTime,
   withResolvedStatus,
 } from '../../common/helpers';
 
 const WEEK_LABELS = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-
-const parseMinutes = duration => {
-  const value = Number(String(duration || '').replace(/[^\d]/g, ''));
-  return value > 0 ? value : 50;
-};
 
 const startOfWeek = value => {
   const date = new Date(value);
@@ -68,7 +64,7 @@ const Stats = () => {
       isSameDay(sessionDateTime(item), now),
     );
     const monthMinutes = monthSessions.reduce(
-      (sum, item) => sum + parseMinutes(item.duration),
+      (sum, item) => sum + (parseDurationMinutes(item.duration) || 50),
       0,
     );
     const completed = monthSessions.filter(item => item.status === 'completed')

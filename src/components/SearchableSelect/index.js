@@ -63,6 +63,9 @@ const SearchableSelect = ({
           onChangeText={setQuery}
           placeholder={placeholder}
           placeholderTextColor={colors.cardTextMuted}
+          autoCorrect={false}
+          autoCapitalize="none"
+          returnKeyType="search"
           style={[styles.input, { color: colors.cardText }]}
         />
       </View>

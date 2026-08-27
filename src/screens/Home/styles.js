@@ -13,19 +13,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 22,
   },
-  profileBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   brand: {
     flex: 1,
     fontSize: 22,
     fontWeight: '800',
     letterSpacing: 0.2,
-    marginLeft: 12,
   },
   bellBtn: {
     width: 40,
@@ -131,6 +123,11 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.5,
     marginLeft: 8,
+  },
+  emptySessions: {
+    fontSize: 14,
+    fontWeight: '500',
+    lineHeight: 20,
   },
 });
 
