@@ -53,8 +53,8 @@ const SessionDurations = () => {
         title: 'Kaydedilemedi',
         textBody:
           result.reason === 'duplicate'
-            ? 'Bu süre zaten var.'
-            : 'Geçerli bir dakika girin.',
+            ? 'Bu süre zaten var'
+            : 'Geçerli bir dakika girin',
       });
       return;
     }
@@ -64,7 +64,7 @@ const SessionDurations = () => {
       title: editingId ? 'Süre güncellendi' : 'Süre eklendi',
       textBody:
         editingId && result.sessionsCount
-          ? `${result.name} olarak ${usageLabel(result.sessionsCount)} güncellendi.`
+          ? `${result.name} olarak ${usageLabel(result.sessionsCount)} güncellendi`
           : formatDurationLabel(value),
     });
     setMinutes('');
@@ -82,7 +82,7 @@ const SessionDurations = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Silinemedi',
-        textBody: 'Son seans süresi silinemez. Önce yeni bir süre ekleyin.',
+        textBody: 'Son seans süresi silinemez. Önce yeni bir süre ekleyin',
       });
       return;
     }
@@ -105,14 +105,14 @@ const SessionDurations = () => {
 
     if (!result.ok) {
       const messages = {
-        last: 'Son seans süresi silinemez. Önce yeni bir süre ekleyin.',
-        replacement: 'Kayıtları aktarmak için başka bir süre seçin.',
-        missing: 'Süre bulunamadı.',
+        last: 'Son seans süresi silinemez. Önce yeni bir süre ekleyin',
+        replacement: 'Kayıtları aktarmak için başka bir süre seçin',
+        missing: 'Süre bulunamadı',
       };
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Silinemedi',
-        textBody: messages[result.reason] || 'İşlem tamamlanamadı.',
+        textBody: messages[result.reason] || 'İşlem tamamlanamadı',
       });
       return;
     }
@@ -121,8 +121,8 @@ const SessionDurations = () => {
       type: ALERT_TYPE.SUCCESS,
       title: 'Süre silindi',
       textBody: result.migrated
-        ? `${usageLabel(result.sessionsCount)} "${result.to}" süresine aktarıldı.`
-        : `"${formatDurationLabel(pendingDelete.minutes)}" kaldırıldı.`,
+        ? `${usageLabel(result.sessionsCount)} "${result.to}" süresine aktarıldı`
+        : `"${formatDurationLabel(pendingDelete.minutes)}" kaldırıldı`,
     });
     setPendingDelete(null);
     setReplacementId('');
@@ -178,7 +178,7 @@ const SessionDurations = () => {
             <>
               <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
                 {usageLabel(pendingDelete.sessionsCount)} bu süreye bağlı.
-                Kayıtlar silinmez; seçtiğiniz süreye aktarılır.
+                Kayıtlar silinmez; seçtiğiniz süreye aktarılır
               </Text>
               <Text style={[styles.label, { color: colors.cardTextMuted }]}>
                 Aktarılacak süre
@@ -212,7 +212,7 @@ const SessionDurations = () => {
             </>
           ) : (
             <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-              Bu süreye bağlı seans kaydı yok.
+              Bu süreye bağlı seans kaydı yok
             </Text>
           )}
           <View style={styles.actions}>

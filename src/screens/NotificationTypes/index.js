@@ -28,7 +28,7 @@ const NotificationTypes = () => {
     <ThemedScreen title="Bildirim Türleri" showBack padTabBar={false}>
       <Text style={[styles.intro, { color: colors.textMuted }]}>
         Hangi yerel hatırlatmaların kurulacağını seçin. Bildirimler bu cihazda
-        kalır, sunucuya gönderilmez.
+        kalır, sunucuya gönderilmez
       </Text>
       {TYPES.map(item => {
         const enabled = settings.types[item.key];

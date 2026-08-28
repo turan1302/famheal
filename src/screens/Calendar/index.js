@@ -326,7 +326,7 @@ const Calendar = () => {
       {visibleSessions.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
           Bu tarih aralığında seans yok. Yıl oklarıyla veya Tarihe git ile geçmişe
-          bakabilirsiniz.
+          bakabilirsiniz
         </Text>
       ) : (
         visibleSessions.map(session => (

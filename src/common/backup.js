@@ -15,6 +15,7 @@ export const createBackupPayload = ({
   sessionDurations,
   notificationSettings,
   themePreference,
+  counselorName,
 }) => ({
   app: BACKUP_APP,
   version: BACKUP_VERSION,
@@ -30,6 +31,7 @@ export const createBackupPayload = ({
       themePreference === 'light' || themePreference === 'dark'
         ? themePreference
         : 'system',
+    counselorName: String(counselorName || '').trim(),
   },
 });
 
@@ -98,6 +100,9 @@ export const parseBackupJson = text => {
         data.themePreference === 'light' || data.themePreference === 'dark'
           ? data.themePreference
           : 'system',
+      ...(Object.prototype.hasOwnProperty.call(data, 'counselorName')
+        ? { counselorName: String(data.counselorName || '').trim() }
+        : {}),
     },
   };
 };
@@ -105,14 +110,14 @@ export const parseBackupJson = text => {
 export const backupErrorMessage = reason => {
   switch (reason) {
     case 'empty':
-      return 'Seçilen dosya boş.';
+      return 'Seçilen dosya boş';
     case 'json':
-      return 'Dosya geçerli bir JSON değil.';
+      return 'Dosya geçerli bir JSON değil';
     case 'app':
-      return 'Bu dosya FamHeal yedeği değil.';
+      return 'Bu dosya FamHeal yedeği değil';
     case 'shape':
-      return 'Yedek dosyasının içeriği eksik veya bozuk.';
+      return 'Yedek dosyasının içeriği eksik veya bozuk';
     default:
-      return 'Yedek okunamadı.';
+      return 'Yedek okunamadı';
   }
 };

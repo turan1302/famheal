@@ -56,8 +56,8 @@ const DataBackup = () => {
         type: ALERT_TYPE.SUCCESS,
         title: 'Yedek kaydedildi',
         textBody: result?.savedToDownloads
-          ? 'JSON dosyası İndirilenler klasörüne yazıldı.'
-          : 'JSON dosyasını Dosyalar, Drive veya e-posta ile saklayın.',
+          ? 'JSON dosyası İndirilenler klasörüne yazıldı'
+          : 'JSON dosyasını Dosyalar, Drive veya e-posta ile saklayın',
       });
     } catch (error) {
       const message = String(error?.message || error?.error || '');
@@ -69,7 +69,7 @@ const DataBackup = () => {
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Dışa aktarılamadı',
-        textBody: 'JSON dosyası oluşturulamadı. Lütfen tekrar deneyin.',
+        textBody: 'JSON dosyası oluşturulamadı. Lütfen tekrar deneyin',
       });
     } finally {
       setBusy(false);
@@ -89,8 +89,8 @@ const DataBackup = () => {
             type: ALERT_TYPE.WARNING,
             title: 'Dosya okunamadı',
             textBody: picked.empty
-              ? 'Seçilen dosya boş. Yeni bir JSON yedek alın ve onu seçin.'
-              : 'JSON yedek dosyasını Dosyalar uygulamasından tekrar seçin.',
+              ? 'Seçilen dosya boş. Yeni bir JSON yedek alın ve onu seçin'
+              : 'JSON yedek dosyasını Dosyalar uygulamasından tekrar seçin',
           });
         }
         return;
@@ -125,7 +125,7 @@ const DataBackup = () => {
       Toast.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Yedek içe aktarıldı',
-        textBody: 'Danışan, seans ve ödev kayıtları geri yüklendi.',
+        textBody: 'Danışan, seans ve ödev kayıtları geri yüklendi',
       });
       if (nextTheme && nextTheme !== preference) {
         setTimeout(() => {
@@ -136,7 +136,7 @@ const DataBackup = () => {
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'İçe aktarılamadı',
-        textBody: 'Yedek uygulanırken bir sorun oluştu.',
+        textBody: 'Yedek uygulanırken bir sorun oluştu',
       });
     } finally {
       setBusy(false);
@@ -149,7 +149,7 @@ const DataBackup = () => {
     <ThemedScreen title="Veri yedekleme" showBack padTabBar={false}>
       <Text style={[styles.intro, { color: colors.textMuted }]}>
         Uygulamayı silip yeniden yüklerseniz kayıtlar kaybolur. JSON yedeğini
-        telefonunuza, iCloud’a veya Drive’a kaydedip sonra içe aktarabilirsiniz.
+        telefonunuza, iCloud’a veya Drive’a kaydedip sonra içe aktarabilirsiniz
       </Text>
 
       <View style={[styles.card, { backgroundColor: colors.card }]}>
@@ -205,7 +205,7 @@ const DataBackup = () => {
           <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
             Bu yedek {pendingSummary.clients} danışan, {pendingSummary.sessions}{' '}
             seans ve {pendingSummary.homework} ödev içeriyor. Şu anki kayıtlar
-            değişecek.
+            değişecek
           </Text>
           <View style={styles.noticeActions}>
             <Pressable
@@ -236,7 +236,8 @@ const DataBackup = () => {
 
       <Text style={[styles.hint, { color: colors.textMuted }]}>
         Yedek yalnızca bu uygulamadaki danışan, seans, ödev, seans türü,
-        bildirim ve görünüm ayarlarını içerir. Dosyayı güvenli bir yerde tutun.
+        danışman adı, bildirim ve görünüm ayarlarını içerir. Dosyayı güvenli bir
+        yerde tutun
       </Text>
     </ThemedScreen>
   );

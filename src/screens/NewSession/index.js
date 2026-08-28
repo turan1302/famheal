@@ -109,7 +109,7 @@ const NewSession = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Danışan seçin',
-        textBody: 'Listeden bir danışan arayıp seçin.',
+        textBody: 'Listeden bir danışan arayıp seçin',
       });
       return;
     }
@@ -117,7 +117,7 @@ const NewSession = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Seans türü seçin',
-        textBody: 'Ayarlardan seans türü ekleyebilirsiniz.',
+        textBody: 'Ayarlardan seans türü ekleyebilirsiniz',
       });
       return;
     }
@@ -132,8 +132,8 @@ const NewSession = () => {
       type: ALERT_TYPE.SUCCESS,
       title: existing ? 'Seans güncellendi' : 'Seans kaydedildi',
       textBody: scheduled
-        ? 'Yaklaşan randevu için yerel hatırlatma kuruldu.'
-        : 'Seans kaydedildi.',
+        ? 'Yaklaşan randevu için yerel hatırlatma kuruldu'
+        : 'Seans kaydedildi',
     });
     if (!existing) {
       navigation.goBack();
@@ -176,7 +176,7 @@ const NewSession = () => {
       <Text style={[styles.label, { color: colors.textMuted }]}>Danışan</Text>
       {clients.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          Önce danışan ekleyin.
+          Önce danışan ekleyin
         </Text>
       ) : (
         <SearchableSelect
@@ -196,7 +196,7 @@ const NewSession = () => {
       <Text style={[styles.label, { color: colors.textMuted }]}>Seans türü</Text>
       {sessionTypes.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          Ayarlar → Seans türleri bölümünden tür ekleyin.
+          Ayarlar → Seans türleri bölümünden tür ekleyin
         </Text>
       ) : (
         sessionTypes.map(item => {
@@ -226,7 +226,7 @@ const NewSession = () => {
       <Text style={[styles.label, { color: colors.textMuted }]}>Süre</Text>
       {durationOptions.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          Ayarlar → Seans süreleri bölümünden süre ekleyin.
+          Ayarlar → Seans süreleri bölümünden süre ekleyin
         </Text>
       ) : (
         <View style={styles.row}>
@@ -321,7 +321,7 @@ const NewSession = () => {
               linkedHomeworkCount
                 ? ` ${linkedHomeworkCount} ödev danışanda kalır.`
                 : ''
-            } Bu işlem geri alınamaz.`}
+            } Bu işlem geri alınamaz`}
             </Text>
             <View style={styles.noticeActions}>
               <Pressable

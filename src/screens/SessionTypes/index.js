@@ -57,8 +57,8 @@ const SessionTypes = () => {
         title: 'Kaydedilemedi',
         textBody:
           result.reason === 'duplicate'
-            ? 'Bu seans türü zaten var.'
-            : 'Tür adı gerekli.',
+            ? 'Bu seans türü zaten var'
+            : 'Tür adı gerekli',
       });
       return;
     }
@@ -71,7 +71,7 @@ const SessionTypes = () => {
         ? `${name.trim()} olarak ${usageLabel(
             result.sessionsCount,
             result.clientsCount,
-          )} güncellendi.`
+          )} güncellendi`
         : name.trim(),
     });
     setName('');
@@ -89,7 +89,7 @@ const SessionTypes = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Silinemedi',
-        textBody: 'Son seans türü silinemez. Önce yeni bir tür ekleyin.',
+        textBody: 'Son seans türü silinemez. Önce yeni bir tür ekleyin',
       });
       return;
     }
@@ -115,14 +115,14 @@ const SessionTypes = () => {
 
     if (!result.ok) {
       const messages = {
-        last: 'Son seans türü silinemez. Önce yeni bir tür ekleyin.',
-        replacement: 'Kayıtları aktarmak için başka bir tür seçin.',
-        missing: 'Tür bulunamadı.',
+        last: 'Son seans türü silinemez. Önce yeni bir tür ekleyin',
+        replacement: 'Kayıtları aktarmak için başka bir tür seçin',
+        missing: 'Tür bulunamadı',
       };
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Silinemedi',
-        textBody: messages[result.reason] || 'İşlem tamamlanamadı.',
+        textBody: messages[result.reason] || 'İşlem tamamlanamadı',
       });
       return;
     }
@@ -131,8 +131,8 @@ const SessionTypes = () => {
       type: ALERT_TYPE.SUCCESS,
       title: 'Tür silindi',
       textBody: result.migrated
-        ? `${usageLabel(result.sessionsCount, result.clientsCount)} "${result.to}" türüne aktarıldı.`
-        : `"${pendingDelete.name}" kaldırıldı.`,
+        ? `${usageLabel(result.sessionsCount, result.clientsCount)} "${result.to}" türüne aktarıldı`
+        : `"${pendingDelete.name}" kaldırıldı`,
     });
     setPendingDelete(null);
     setReplacementId('');
@@ -192,7 +192,7 @@ const SessionTypes = () => {
                   pendingDelete.sessionsCount,
                   pendingDelete.clientsCount,
                 )}{' '}
-                bu türe bağlı. Kayıtlar silinmez; seçtiğiniz türe aktarılır.
+                bu türe bağlı. Kayıtlar silinmez; seçtiğiniz türe aktarılır
               </Text>
               <Text style={[styles.label, { color: colors.cardTextMuted }]}>
                 Aktarılacak tür
@@ -230,7 +230,7 @@ const SessionTypes = () => {
             </>
           ) : (
             <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-              Bu türe bağlı seans veya danışan kaydı yok.
+              Bu türe bağlı seans veya danışan kaydı yok
             </Text>
           )}
           <View style={styles.actions}>

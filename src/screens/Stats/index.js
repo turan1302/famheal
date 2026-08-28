@@ -281,7 +281,7 @@ const Stats = () => {
       <View style={[styles.panel, { backgroundColor: colors.card }]}>
         {report.typeRows.length === 0 ? (
           <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-            Henüz seans türü yok.
+            Henüz seans türü yok
           </Text>
         ) : (
           report.typeRows.map(item => (
@@ -342,7 +342,7 @@ const Stats = () => {
       {report.clientRows.length === 0 ? (
         <View style={[styles.panel, { backgroundColor: colors.card }]}>
           <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-            Bu ay henüz seans yok.
+            Bu ay henüz seans yok
           </Text>
         </View>
       ) : (

@@ -13,17 +13,17 @@ const FILTERS = {
   today: {
     title: 'Bugün teslim',
     hint: 'Teslim günü bugün olan ödevler',
-    empty: 'Bugün teslim edilecek ödev yok.',
+    empty: 'Bugün teslim edilecek ödev yok',
   },
   upcoming: {
     title: 'Yaklaşan ödevler',
     hint: 'Teslim günü henüz gelmemiş ödevler',
-    empty: 'Yaklaşan ödev yok.',
+    empty: 'Yaklaşan ödev yok',
   },
   overdue: {
     title: 'Geciken ödevler',
     hint: 'Teslim günü geçmiş ödevler',
-    empty: 'Geciken ödev yok.',
+    empty: 'Geciken ödev yok',
   },
 };
 
@@ -74,7 +74,7 @@ const Homework = () => {
     >
       <Text style={[styles.hint, { color: colors.textMuted }]}>
         {meta?.hint ||
-          'Danışanlarınıza verdiğiniz ödevleri buradan düzenleyin veya silin.'}
+          'Danışanlarınıza verdiğiniz ödevleri buradan düzenleyin veya silin'}
       </Text>
 
       {pendingDelete ? (
@@ -83,7 +83,7 @@ const Homework = () => {
             “{pendingDelete.title}” silinsin mi?
           </Text>
           <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-            Bu ödev kaydı kaldırılacak. Bu işlem geri alınamaz.
+            Bu ödev kaydı kaldırılacak. Bu işlem geri alınamaz
           </Text>
           <View style={styles.noticeActions}>
             <Pressable
@@ -108,7 +108,7 @@ const Homework = () => {
 
       {items.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          {meta?.empty || 'Henüz ödev yok. Sağ alttan ekleyebilirsiniz.'}
+          {meta?.empty || 'Henüz ödev yok. Sağ alttan ekleyebilirsiniz'}
         </Text>
       ) : (
         items.map(item => (

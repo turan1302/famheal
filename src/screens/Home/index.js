@@ -52,6 +52,7 @@ const Home = () => {
   const sessions = useAppStore(state => state.sessions);
   const clients = useAppStore(state => state.clients);
   const homework = useAppStore(state => state.homework);
+  const counselorName = useAppStore(state => state.counselorName);
   const today = useMemo(() => new Date(), []);
 
   const todaySessions = useMemo(
@@ -171,9 +172,14 @@ const Home = () => {
             </Pressable>
           </View>
 
-          <Text style={[styles.greeting, { color: colors.text }]}>Merhaba 👋</Text>
+          <Text
+            style={[styles.greeting, { color: colors.text }]}
+            numberOfLines={2}
+          >
+            {counselorName ? `Merhaba ${counselorName} 👋` : 'Merhaba 👋'}
+          </Text>
           <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-            Bugün {todaySessions.length} seansınız var.
+            Bugün {todaySessions.length} seansınız var
           </Text>
 
           <View style={styles.statsGrid}>
@@ -279,7 +285,7 @@ const Home = () => {
 
             {todaySessions.length === 0 ? (
               <Text style={[styles.emptySessions, { color: colors.textMuted }]}>
-                Bugün planlanmış seans yok.
+                Bugün planlanmış seans yok
               </Text>
             ) : (
               todaySessions.slice(0, 3).map(session => (

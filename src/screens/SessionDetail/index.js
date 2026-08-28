@@ -44,7 +44,7 @@ const SessionDetail = () => {
   if (!session) {
     return (
       <ThemedScreen title="Seans" showBack>
-        <Text style={{ color: colors.textMuted }}>Seans bulunamadı.</Text>
+        <Text style={{ color: colors.textMuted }}>Seans bulunamadı</Text>
       </ThemedScreen>
     );
   }
@@ -65,12 +65,12 @@ const SessionDetail = () => {
       title: 'Durum güncellendi',
       textBody:
         status === 'cancelled'
-          ? 'Seans iptal edildi.'
+          ? 'Seans iptal edildi'
           : status === 'no_show'
-            ? 'Danışan gelmedi olarak işaretlendi.'
+            ? 'Danışan gelmedi olarak işaretlendi'
             : status === 'completed'
-              ? 'Seans tamamlandı.'
-              : 'Seans planlandı.',
+              ? 'Seans tamamlandı'
+              : 'Seans planlandı',
     });
   };
 
@@ -192,7 +192,7 @@ const SessionDetail = () => {
       <Text style={[styles.section, { color: colors.text }]}>Seans ödevleri</Text>
       {sessionHomework.length === 0 ? (
         <Text style={[styles.meta, { color: colors.textMuted }]}>
-          Bu seansa henüz ödev eklenmedi.
+          Bu seansa henüz ödev eklenmedi
         </Text>
       ) : (
         sessionHomework.map(item => (
@@ -223,7 +223,7 @@ const SessionDetail = () => {
               sessionHomework.length
                 ? ` ${sessionHomework.length} ödev danışanda kalır.`
                 : ''
-            } Bu işlem geri alınamaz.`}
+            } Bu işlem geri alınamaz`}
           </Text>
           <View style={styles.noticeActions}>
             <Pressable

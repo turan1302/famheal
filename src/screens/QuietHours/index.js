@@ -34,7 +34,7 @@ const QuietHours = () => {
     <ThemedScreen title="Sessiz Saatler" showBack padTabBar={false}>
       <Text style={[styles.intro, { color: colors.textMuted }]}>
         Bu aralıkta düşen hatırlatmalar sessiz saat bitimine ertelenir. Seans
-        saatini geçmiş bir hatırlatma gönderilmez.
+        saatini geçmiş bir hatırlatma gönderilmez
       </Text>
 
       <View style={[styles.row, { backgroundColor: colors.card }]}>

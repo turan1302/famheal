@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
@@ -65,8 +65,15 @@ const Settings = () => {
   const navigation = useNavigation();
   const notificationSettings = useNotificationSettings();
   const resetAllData = useAppStore(state => state.resetAllData);
+  const counselorName = useAppStore(state => state.counselorName);
+  const updateCounselorName = useAppStore(state => state.updateCounselorName);
   const [confirmClear, setConfirmClear] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [name, setName] = useState(counselorName || '');
+
+  useEffect(() => {
+    setName(counselorName || '');
+  }, [counselorName]);
 
   const typeHint = [
     notificationSettings.types.session ? 'Seans' : null,
@@ -81,9 +88,46 @@ const Settings = () => {
       )}`
     : 'Kapalı';
 
+  const onSaveName = () => {
+    const saved = updateCounselorName(name);
+    setName(saved);
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: saved ? 'Ad kaydedildi' : 'Ad kaldırıldı',
+      textBody: saved || 'Ana sayfada yalnızca Merhaba görünür',
+    });
+  };
+
   return (
     <ThemedScreen title="Ayarlar">
       <Text style={[styles.sectionLabel, { color: colors.textMuted }]}>
+        Danışman
+      </Text>
+      <TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="Örn. Ayşe Yılmaz"
+        placeholderTextColor={colors.cardTextMuted}
+        autoCapitalize="words"
+        autoCorrect={false}
+        style={[
+          styles.input,
+          { backgroundColor: colors.card, color: colors.cardText },
+        ]}
+      />
+      <Pressable
+        onPress={onSaveName}
+        style={({ pressed }) => [
+          styles.saveBtn,
+          { backgroundColor: colors.quickPrimaryBg, opacity: pressed ? 0.88 : 1 },
+        ]}
+      >
+        <Text style={[styles.saveText, { color: colors.quickPrimaryText }]}>
+          Kaydet
+        </Text>
+      </Pressable>
+
+      <Text style={[styles.sectionLabel, styles.sectionGap, { color: colors.textMuted }]}>
         Görünüm
       </Text>
       <View style={styles.themeRow}>
@@ -176,8 +220,9 @@ const Settings = () => {
             Tüm veriler silinsin mi?
           </Text>
           <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-            Danışan, seans ve ödev kayıtları kaldırılır. Seans türleri varsayılana
-            döner. Bu işlem geri alınamaz; önce JSON yedek alabilirsiniz.
+            Danışan, seans ve ödev kayıtları kaldırılır. Danışman adı silinir.
+            Seans türleri varsayılana döner. Bu işlem geri alınamaz; önce JSON
+            yedek alabilirsiniz
           </Text>
           <View style={styles.noticeActions}>
             <Pressable
@@ -201,13 +246,13 @@ const Settings = () => {
                   Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Veriler silindi',
-                    textBody: 'Uygulama boş kuruluma döndü.',
+                    textBody: 'Uygulama boş kuruluma döndü',
                   });
                 } catch {
                   Toast.show({
                     type: ALERT_TYPE.DANGER,
                     title: 'Silinemedi',
-                    textBody: 'Kayıtlar temizlenirken bir sorun oluştu.',
+                    textBody: 'Kayıtlar temizlenirken bir sorun oluştu',
                   });
                 } finally {
                   setClearing(false);
@@ -293,7 +338,7 @@ const Settings = () => {
             Veriler cihazda
           </Text>
           <Text style={[styles.hint, { color: colors.cardTextMuted }]}>
-            Hesap veya giriş yoktur. Kayıtlar bu cihazda tutulur.
+            Hesap veya giriş yoktur. Kayıtlar bu cihazda tutulur
           </Text>
         </View>
       </View>
@@ -361,6 +406,25 @@ const styles = StyleSheet.create({
   },
   sectionGap: {
     marginTop: 8,
+  },
+  input: {
+    height: 52,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 0,
+    fontSize: 15,
+    marginBottom: 10,
+  },
+  saveBtn: {
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 18,
+  },
+  saveText: {
+    fontSize: 16,
+    fontWeight: '700',
   },
   row: {
     flexDirection: 'row',

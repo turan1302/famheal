@@ -68,7 +68,7 @@ const NewHomework = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Eksik bilgi',
-        textBody: 'Ödev başlığı gerekli.',
+        textBody: 'Ödev başlığı gerekli',
       });
       return;
     }
@@ -76,7 +76,7 @@ const NewHomework = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Danışan seçin',
-        textBody: 'Listeden bir danışan arayıp seçin.',
+        textBody: 'Listeden bir danışan arayıp seçin',
       });
       return;
     }
@@ -141,7 +141,7 @@ const NewHomework = () => {
       <Text style={[styles.label, { color: colors.textMuted }]}>Danışan</Text>
       {clients.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          Önce danışan ekleyin.
+          Önce danışan ekleyin
         </Text>
       ) : (
         <SearchableSelect
@@ -258,7 +258,7 @@ const NewHomework = () => {
               “{existing.title}” silinsin mi?
             </Text>
             <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-              Bu ödev kaydı kaldırılacak. Bu işlem geri alınamaz.
+              Bu ödev kaydı kaldırılacak. Bu işlem geri alınamaz
             </Text>
             <View style={styles.noticeActions}>
               <Pressable

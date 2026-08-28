@@ -56,7 +56,7 @@ const NewClient = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Eksik bilgi',
-        textBody: 'Danışan adı gerekli.',
+        textBody: 'Danışan adı gerekli',
       });
       return;
     }
@@ -64,7 +64,7 @@ const NewClient = () => {
       Toast.show({
         type: ALERT_TYPE.WARNING,
         title: 'Seans türü seçin',
-        textBody: 'Ayarlardan seans türü ekleyebilirsiniz.',
+        textBody: 'Ayarlardan seans türü ekleyebilirsiniz',
       });
       return;
     }
@@ -156,7 +156,7 @@ const NewClient = () => {
       <Text style={[styles.label, { color: colors.textMuted }]}>Seans türü</Text>
       {sessionTypes.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
-          Ayarlar → Seans türleri bölümünden tür ekleyin.
+          Ayarlar → Seans türleri bölümünden tür ekleyin
         </Text>
       ) : (
         sessionTypes.map(item => {
@@ -203,7 +203,7 @@ const NewClient = () => {
               “{existing.name}” silinsin mi?
             </Text>
             <Text style={[styles.noticeBody, { color: colors.cardTextMuted }]}>
-              Danışan kaydı kaldırılacak.{relatedText} Bu işlem geri alınamaz.
+              Danışan kaydı kaldırılacak.{relatedText} Bu işlem geri alınamaz
             </Text>
             <View style={styles.noticeActions}>
               <Pressable

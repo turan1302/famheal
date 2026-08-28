@@ -20,28 +20,28 @@ const SLIDES = [
     icon: 'people-outline',
     title: 'Danışanlarınızı yönetin',
     description:
-      'Her danışanın profilini, görüşme geçmişini ve durumunu tek ekrandan takip edin.',
+      'Her danışanın profilini, görüşme geçmişini ve durumunu tek ekrandan takip edin',
   },
   {
     key: 'sessions',
     icon: 'calendar-outline',
     title: 'Seans ve takvim',
     description:
-      'Günlük seanslarınızı planlayın, notlarınızı kaydedin ve bir sonraki görüşmeye hazır olun.',
+      'Günlük seanslarınızı planlayın, notlarınızı kaydedin ve bir sonraki görüşmeye hazır olun',
   },
   {
     key: 'goals',
     icon: 'flag-outline',
     title: 'Danışan ödevleri',
     description:
-      'Danışanlarınıza ödev atayın, içeriğini düzenleyin ve takibini sade kartlarla yürütün.',
+      'Danışanlarınıza ödev atayın, içeriğini düzenleyin ve takibini sade kartlarla yürütün',
   },
   {
     key: 'offline',
     icon: 'notifications-outline',
     title: 'Randevu hatırlatması',
     description:
-      'Yaklaşan seanslar için yerel bildirim alın. Ödev teslimi bildirimi yoktur.',
+      'Yaklaşan seanslar için yerel bildirim alın. Ödev teslimi bildirimi yoktur',
   },
 ];
 

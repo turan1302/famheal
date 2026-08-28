@@ -139,8 +139,8 @@ const Clients = () => {
       {filtered.length === 0 ? (
         <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
           {clients.length === 0
-            ? 'Henüz danışan yok. Sağ alttan ekleyebilirsiniz.'
-            : 'Bu filtreye uyan danışan yok.'}
+            ? 'Henüz danışan yok. Sağ alttan ekleyebilirsiniz'
+            : 'Bu filtreye uyan danışan yok'}
         </Text>
       ) : (
         filtered.map(client => (

@@ -49,6 +49,7 @@ export const useAppStore = create(
       sessionTypes: SESSION_TYPES,
       sessionDurations: DEFAULT_SESSION_DURATIONS,
       notificationSettings: DEFAULT_NOTIFICATION_SETTINGS,
+      counselorName: '',
 
       addClient: payload => {
         const client = {
@@ -553,6 +554,12 @@ export const useAppStore = create(
         return { ok: true, migrated: false };
       },
 
+      updateCounselorName: name => {
+        const counselorName = String(name || '').trim();
+        set({ counselorName });
+        return counselorName;
+      },
+
       updateNotificationSettings: patch => {
         const current = resolveNotificationSettings(get().notificationSettings);
         const next = {
@@ -572,6 +579,7 @@ export const useAppStore = create(
           sessionTypes: state.sessionTypes,
           sessionDurations: state.sessionDurations,
           notificationSettings: state.notificationSettings,
+          counselorName: state.counselorName || '',
         };
       },
 
@@ -593,6 +601,10 @@ export const useAppStore = create(
           payload.sessions,
           payload.homework,
         );
+        const counselorName =
+          payload.counselorName !== undefined
+            ? String(payload.counselorName || '').trim()
+            : get().counselorName || '';
 
         set({
           clients: cleaned.clients,
@@ -601,6 +613,7 @@ export const useAppStore = create(
           sessionTypes,
           sessionDurations,
           notificationSettings,
+          counselorName,
         });
 
         const state = get();
@@ -626,6 +639,7 @@ export const useAppStore = create(
           sessionTypes: SESSION_TYPES,
           sessionDurations: DEFAULT_SESSION_DURATIONS,
           notificationSettings: DEFAULT_NOTIFICATION_SETTINGS,
+          counselorName: '',
         });
       },
     }),
@@ -639,6 +653,7 @@ export const useAppStore = create(
         sessionTypes: state.sessionTypes,
         sessionDurations: state.sessionDurations,
         notificationSettings: state.notificationSettings,
+        counselorName: state.counselorName || '',
       }),
       merge: (persisted, current) => {
         const next = {
@@ -654,6 +669,9 @@ export const useAppStore = create(
           notificationSettings: resolveNotificationSettings(
             persisted?.notificationSettings,
           ),
+          counselorName: String(
+            persisted?.counselorName ?? current.counselorName ?? '',
+          ).trim(),
         };
         const cleaned = sanitizeRelations(
           next.clients,

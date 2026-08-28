@@ -13,7 +13,7 @@ const Notifications = () => {
     <ThemedScreen title="Bildirimler" showBack>
       <Text style={[styles.hint, { color: colors.textMuted }]}>
         Yalnızca yaklaşan randevu hatırlatmaları gösterilir. Türleri ve sessiz
-        saatleri Ayarlar bölümünden değiştirebilirsiniz.
+        saatleri Ayarlar bölümünden değiştirebilirsiniz
       </Text>
       {items.length === 0 ? (
         <View style={[styles.card, { backgroundColor: colors.card }]}>
@@ -21,7 +21,7 @@ const Notifications = () => {
             Yaklaşan seans yok
           </Text>
           <Text style={[styles.body, { color: colors.cardTextMuted }]}>
-            Yeni seans eklediğinizde 15 dakika önce yerel bildirim gönderilir.
+            Yeni seans eklediğinizde 15 dakika önce yerel bildirim gönderilir
           </Text>
         </View>
       ) : (
