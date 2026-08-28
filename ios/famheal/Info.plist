@@ -33,6 +33,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>FamHeal, yedek dosyanızı paylaşım menüsünden Fotoğraflar’a kaydetmek için fotoğraf kitaplığına yazabilir.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>FamHeal, yedek JSON dosyanızı Dosyalar veya Fotoğraflar’dan seçmek ve paylaşım sırasında kaydetmek için fotoğraf kitaplığına erişebilir.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
