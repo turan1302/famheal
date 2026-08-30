@@ -175,7 +175,7 @@ const NewSession = () => {
     >
       <Text style={[styles.label, { color: colors.textMuted }]}>Danışan</Text>
       {clients.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Önce danışan ekleyin
         </Text>
       ) : (
@@ -188,14 +188,16 @@ const NewSession = () => {
               setType(item.type);
             }
           }}
-          placeholder="Danışan adı veya telefon ara"
+          title="Danışan seç"
+          placeholder="Danışan seçin"
+          searchPlaceholder="Ad veya telefon ara"
           emptyLabel="Eşleşen danışan yok"
         />
       )}
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Seans türü</Text>
       {sessionTypes.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Ayarlar → Seans türleri bölümünden tür ekleyin
         </Text>
       ) : (
@@ -225,7 +227,7 @@ const NewSession = () => {
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Süre</Text>
       {durationOptions.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Ayarlar → Seans süreleri bölümünden süre ekleyin
         </Text>
       ) : (
@@ -292,6 +294,7 @@ const NewSession = () => {
         placeholder="Seans notu"
         placeholderTextColor={colors.cardTextMuted}
         multiline
+        scrollEnabled={false}
         style={[
           styles.notes,
           { backgroundColor: colors.card, color: colors.cardText },

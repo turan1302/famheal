@@ -155,7 +155,7 @@ const NewClient = () => {
       />
       <Text style={[styles.label, { color: colors.textMuted }]}>Seans türü</Text>
       {sessionTypes.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Ayarlar → Seans türleri bölümünden tür ekleyin
         </Text>
       ) : (

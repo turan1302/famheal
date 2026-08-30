@@ -106,7 +106,7 @@ const Home = () => {
 
   const toneColors = {
     mint: { bg: colors.mintSoft, icon: colors.teal },
-    teal: { bg: colors.teal, icon: colors.quickPrimaryText },
+    teal: { bg: colors.tealFill, icon: colors.quickPrimaryText },
     danger: { bg: colors.dangerSoft, icon: colors.danger },
     chart: { bg: colors.chartSoft, icon: colors.chart },
   };

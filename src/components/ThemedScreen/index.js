@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react';
 import {
   View,
   Text,
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,17 +29,48 @@ const ThemedScreen = ({
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const bottomPad = padTabBar
+  const [keyboardInset, setKeyboardInset] = useState(0);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const show = Keyboard.addListener(showEvent, event => {
+      const kb = event.endCoordinates?.height || 0;
+      if (Platform.OS === 'ios') {
+        setKeyboardInset(32);
+        return;
+      }
+      const frameY = event.endCoordinates?.screenY ?? 0;
+      const windowHeight = Dimensions.get('window').height;
+      const alreadyResized = frameY > 0 && windowHeight <= frameY + 24;
+      setKeyboardInset(alreadyResized ? 24 : kb + 24);
+    });
+    const hide = Keyboard.addListener(hideEvent, () => setKeyboardInset(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
+  const restPad = padTabBar
     ? getTabBarTotalHeight(insets.bottom) + 16
     : Math.max(insets.bottom, 24);
 
+  const bottomPad = keyboardInset > 0 ? keyboardInset : restPad;
+
   const body = scroll ? (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingBottom: bottomPad }]}
+      style={styles.fill}
+      contentContainerStyle={[
+        styles.content,
+        styles.scrollContent,
+        { paddingBottom: bottomPad },
+      ]}
       showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
-      automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+      keyboardShouldPersistTaps="always"
+      keyboardDismissMode="none"
+      automaticallyAdjustKeyboardInsets={false}
+      nestedScrollEnabled
     >
       {children}
     </ScrollView>
@@ -51,8 +85,9 @@ const ThemedScreen = ({
       <AppStatusBar barStyle={colors.statusBar} />
       <KeyboardAvoidingView
         style={styles.fill}
-        behavior={Platform.OS === 'ios' && !scroll ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled={Platform.OS === 'ios'}
+        keyboardVerticalOffset={0}
       >
         <FadeInView>
           <View

@@ -137,7 +137,7 @@ const Clients = () => {
       </Text>
 
       {filtered.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           {clients.length === 0
             ? 'Henüz danışan yok. Sağ alttan ekleyebilirsiniz'
             : 'Bu filtreye uyan danışan yok'}
@@ -159,7 +159,7 @@ const Clients = () => {
                 styles.avatar,
                 {
                   backgroundColor:
-                    client.accent === 'mint' ? colors.mintSoft : colors.teal,
+                    client.accent === 'mint' ? colors.mintSoft : colors.tealFill,
                 },
               ]}
             >

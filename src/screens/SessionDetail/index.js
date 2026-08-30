@@ -154,6 +154,7 @@ const SessionDetail = () => {
             placeholder="Örn. Danışan mazeret bildirdi"
             placeholderTextColor={colors.cardTextMuted}
             multiline
+            scrollEnabled={false}
             style={[styles.reasonInput, { color: colors.cardText }]}
           />
         </View>
@@ -209,6 +210,14 @@ const SessionDetail = () => {
             <Text style={[styles.meta, { color: colors.cardTextMuted }]}>
               Teslim: {formatDate(new Date(item.due))}
             </Text>
+            {item.notes ? (
+              <Text
+                style={[styles.hwNotes, { color: colors.cardTextMuted }]}
+                numberOfLines={2}
+              >
+                {item.notes}
+              </Text>
+            ) : null}
           </Pressable>
         ))
       )}
@@ -344,6 +353,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
+  },
+  hwNotes: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
   },
   deleteBtn: {
     height: 48,

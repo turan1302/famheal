@@ -38,7 +38,7 @@ const SessionCard = ({ session, onPress }) => {
     status === 'pending'
       ? colors.mintSoft
       : status === 'upcoming'
-        ? colors.teal
+        ? colors.tealFill
         : status === 'cancelled' || status === 'no_show'
           ? colors.dangerSoft
           : colors.chartSoft;

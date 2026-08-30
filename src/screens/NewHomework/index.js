@@ -140,7 +140,7 @@ const NewHomework = () => {
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Danışan</Text>
       {clients.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Önce danışan ekleyin
         </Text>
       ) : (
@@ -158,7 +158,9 @@ const NewHomework = () => {
               }
             }
           }}
-          placeholder="Danışan adı veya telefon ara"
+          title="Danışan seç"
+          placeholder="Danışan seçin"
+          searchPlaceholder="Ad veya telefon ara"
           emptyLabel="Eşleşen danışan yok"
         />
       )}
@@ -230,9 +232,10 @@ const NewHomework = () => {
       <TextInput
         value={notes}
         onChangeText={setNotes}
-        placeholder="Ödev açıklaması"
+        placeholder="Ödevle ilgili not (isteğe bağlı)"
         placeholderTextColor={colors.cardTextMuted}
         multiline
+        scrollEnabled={false}
         style={[
           styles.notes,
           { backgroundColor: colors.card, color: colors.cardText },

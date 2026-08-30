@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 240,
     height: 240,
+    backgroundColor: 'transparent',
   },
   footer: {
     position: 'absolute',

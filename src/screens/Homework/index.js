@@ -107,7 +107,7 @@ const Homework = () => {
       ) : null}
 
       {items.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           {meta?.empty || 'Henüz ödev yok. Sağ alttan ekleyebilirsiniz'}
         </Text>
       ) : (
@@ -131,6 +131,14 @@ const Homework = () => {
               <Text style={[styles.meta, { color: colors.cardTextMuted }]}>
                 {item.client}  ·  Teslim {formatShortDate(new Date(item.due))}
               </Text>
+              {item.notes ? (
+                <Text
+                  style={[styles.notes, { color: colors.cardTextMuted }]}
+                  numberOfLines={2}
+                >
+                  {item.notes}
+                </Text>
+              ) : null}
             </Pressable>
             <Pressable
               onPress={() => setPendingDelete(item)}
@@ -208,6 +216,11 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 13,
     fontWeight: '500',
+  },
+  notes: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 6,
   },
   iconBtn: {
     paddingLeft: 8,

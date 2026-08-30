@@ -356,7 +356,7 @@ const Stats = () => {
                 styles.avatar,
                 {
                   backgroundColor:
-                    index % 2 === 0 ? colors.mintSoft : colors.teal,
+                    index % 2 === 0 ? colors.mintSoft : colors.tealFill,
                 },
               ]}
             >
@@ -390,7 +390,7 @@ const Stats = () => {
 const MetricCard = ({ colors, icon, value, label, tone, onPress }) => {
   const tones = {
     mint: { bg: colors.mintSoft, icon: colors.teal },
-    teal: { bg: colors.teal, icon: colors.quickPrimaryText },
+    teal: { bg: colors.tealFill, icon: colors.quickPrimaryText },
     danger: { bg: colors.dangerSoft, icon: colors.danger },
     chart: { bg: colors.chartSoft, icon: colors.chart },
   };

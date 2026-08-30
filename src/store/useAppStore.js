@@ -26,11 +26,12 @@ const sanitizeRelations = (clients = [], sessions = [], homework = []) => {
   const sessionIds = new Set(nextSessions.map(item => item.id));
   const nextHomework = homeworkList
     .filter(item => clientIds.has(item.clientId))
-    .map(item =>
-      !item.sessionId || sessionIds.has(item.sessionId)
-        ? item
-        : { ...item, sessionId: '' },
-    );
+    .map(item => ({
+      ...item,
+      notes: String(item?.notes || '').trim(),
+      sessionId:
+        !item.sessionId || sessionIds.has(item.sessionId) ? item.sessionId : '',
+    }));
   return {
     clients: clientList,
     sessions: nextSessions,

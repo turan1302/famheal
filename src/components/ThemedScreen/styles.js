@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   fill: {
     flex: 1,
   },

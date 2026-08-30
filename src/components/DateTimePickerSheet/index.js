@@ -50,7 +50,7 @@ const DateTimePickerSheet = ({
       visible
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <View
           style={[
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(15, 61, 58, 0.32)',
+    backgroundColor: 'transparent',
   },
   sheet: {
     borderTopLeftRadius: 24,

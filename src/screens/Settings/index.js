@@ -26,10 +26,10 @@ const THEME_OPTIONS = [
     key: 'dark',
     label: 'Koyu',
     icon: 'moon-outline',
-    previewBg: '#3E6F69',
-    previewText: '#F5FBFA',
-    previewIcon: '#E9F6F2',
-    swatches: ['#EDF5F2', '#9FD9CF', '#2F635D'],
+    previewBg: '#152826',
+    previewText: '#F4FBF9',
+    previewIcon: '#8FD4C8',
+    swatches: ['#243B38', '#8FD4C8', '#3D7A72'],
   },
   {
     key: 'system',
@@ -180,7 +180,10 @@ const Settings = () => {
                 {preview.swatches.map(color => (
                   <View
                     key={color}
-                    style={[styles.swatch, { backgroundColor: color }]}
+                    style={[
+                      styles.swatch,
+                      { backgroundColor: color, borderColor: colors.border },
+                    ]}
                   />
                 ))}
               </View>

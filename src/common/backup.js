@@ -23,7 +23,11 @@ export const createBackupPayload = ({
   data: {
     clients,
     sessions,
-    homework,
+    homework: (Array.isArray(homework) ? homework : []).map(item =>
+      isObject(item)
+        ? { ...item, notes: String(item.notes || '').trim() }
+        : item,
+    ),
     sessionTypes,
     sessionDurations,
     notificationSettings: resolveNotificationSettings(notificationSettings),
@@ -87,12 +91,18 @@ export const parseBackupJson = text => {
     return { ok: false, reason: 'shape' };
   }
 
+  const homeworkWithNotes = homework.map(item =>
+    isObject(item)
+      ? { ...item, notes: String(item.notes || '').trim() }
+      : item,
+  );
+
   return {
     ok: true,
     data: {
       clients,
       sessions,
-      homework,
+      homework: homeworkWithNotes,
       sessionTypes,
       sessionDurations,
       notificationSettings: resolveNotificationSettings(data.notificationSettings),

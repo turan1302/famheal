@@ -324,7 +324,7 @@ const Calendar = () => {
         {listTitle}  ·  {visibleSessions.length} seans
       </Text>
       {visibleSessions.length === 0 ? (
-        <Text style={[styles.empty, { color: colors.cardTextMuted }]}>
+        <Text style={[styles.empty, { color: colors.textMuted }]}>
           Bu tarih aralığında seans yok. Yıl oklarıyla veya Tarihe git ile geçmişe
           bakabilirsiniz
         </Text>
