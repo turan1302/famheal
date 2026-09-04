@@ -18,6 +18,7 @@ import {
   isSameMonth,
   sessionDateTime,
   withResolvedStatus,
+  isOpenHomework,
 } from '../../common/helpers';
 import styles from './styles';
 
@@ -88,8 +89,8 @@ const Home = () => {
     },
     {
       key: 'homework',
-      value: homework.length,
-      label: 'DANIŞAN ÖDEVLERİ',
+      value: homework.filter(isOpenHomework).length,
+      label: 'AÇIK ÖDEVLER',
       icon: 'create-outline',
       tone: 'danger',
       screen: 'Homework',

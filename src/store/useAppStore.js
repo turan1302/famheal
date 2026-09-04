@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SESSION_TYPES } from '../common/mockData';
 import { STORAGE_KEYS } from '../common/storageKeys';
-import { getInitials, padTime, resolveSessionStatus, isClosedSessionStatus, formatDurationLabel, normalizeSessionDurations, DEFAULT_SESSION_DURATIONS } from '../common/helpers';
+import { getInitials, padTime, resolveSessionStatus, isClosedSessionStatus, formatDurationLabel, normalizeSessionDurations, DEFAULT_SESSION_DURATIONS, normalizeHomeworkItem, normalizeHomeworkProgress } from '../common/helpers';
 import {
   cancelAllReminders,
   cancelHomeworkReminder,
@@ -27,8 +27,7 @@ const sanitizeRelations = (clients = [], sessions = [], homework = []) => {
   const nextHomework = homeworkList
     .filter(item => clientIds.has(item.clientId))
     .map(item => ({
-      ...item,
-      notes: String(item?.notes || '').trim(),
+      ...normalizeHomeworkItem(item),
       sessionId:
         !item.sessionId || sessionIds.has(item.sessionId) ? item.sessionId : '',
     }));
@@ -268,6 +267,7 @@ export const useAppStore = create(
             ? new Date(payload.due).toISOString()
             : new Date().toISOString(),
           notes: payload.notes?.trim() || '',
+          progress: normalizeHomeworkProgress(payload.progress),
         };
         set(state => ({ homework: [item, ...state.homework] }));
         scheduleHomeworkReminder(item, get().notificationSettings);
@@ -301,6 +301,10 @@ export const useAppStore = create(
                     payload.notes !== undefined
                       ? payload.notes.trim()
                       : item.notes,
+                  progress:
+                    payload.progress !== undefined
+                      ? normalizeHomeworkProgress(payload.progress)
+                      : normalizeHomeworkProgress(item.progress),
                 }
               : item,
           ),
@@ -309,6 +313,24 @@ export const useAppStore = create(
         if (updated) {
           scheduleHomeworkReminder(updated, get().notificationSettings);
         }
+      },
+
+      setHomeworkProgress: (id, progress) => {
+        const current = get().homework.find(item => item.id === id);
+        if (!current) {
+          return null;
+        }
+        const next = normalizeHomeworkProgress(progress);
+        set(state => ({
+          homework: state.homework.map(item =>
+            item.id === id ? { ...item, progress: next } : item,
+          ),
+        }));
+        const updated = get().homework.find(item => item.id === id);
+        if (updated) {
+          scheduleHomeworkReminder(updated, get().notificationSettings);
+        }
+        return updated;
       },
 
       deleteHomework: id => {

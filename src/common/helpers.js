@@ -44,7 +44,39 @@ export const startOfDay = value => {
   return date;
 };
 
+export const HOMEWORK_PROGRESS_OPTIONS = [
+  { key: 'assigned', label: 'Verildi' },
+  { key: 'in_progress', label: 'Devam' },
+  { key: 'done', label: 'Tamamlandı' },
+];
+
+export const normalizeHomeworkProgress = value =>
+  HOMEWORK_PROGRESS_OPTIONS.some(item => item.key === value)
+    ? value
+    : 'assigned';
+
+export const homeworkProgressLabel = value =>
+  HOMEWORK_PROGRESS_OPTIONS.find(item => item.key === value)?.label ||
+  'Verildi';
+
+export const isOpenHomework = item =>
+  normalizeHomeworkProgress(item?.progress) !== 'done';
+
+export const normalizeHomeworkItem = item => {
+  if (!item || typeof item !== 'object') {
+    return item;
+  }
+  return {
+    ...item,
+    notes: String(item.notes || '').trim(),
+    progress: normalizeHomeworkProgress(item.progress),
+  };
+};
+
 export const homeworkStatus = (item, now = new Date()) => {
+  if (!isOpenHomework(item)) {
+    return 'done';
+  }
   const due = startOfDay(item?.due);
   const today = startOfDay(now);
   if (due.getTime() < today.getTime()) {
@@ -54,6 +86,34 @@ export const homeworkStatus = (item, now = new Date()) => {
     return 'today';
   }
   return 'upcoming';
+};
+
+export const buildClientPrepSummary = ({
+  clientId,
+  sessions = [],
+  homework = [],
+  excludeSessionId,
+}) => {
+  if (!clientId) {
+    return null;
+  }
+
+  const clientSessions = sessions
+    .filter(item => item.clientId === clientId && item.id !== excludeSessionId)
+    .sort((a, b) => sessionDateTime(b) - sessionDateTime(a));
+  const lastSession = clientSessions[0] || null;
+  const lastNotesSession =
+    clientSessions.find(item => String(item.notes || '').trim()) || null;
+  const openHomework = homework
+    .filter(item => item.clientId === clientId && isOpenHomework(item))
+    .sort((a, b) => new Date(a.due || 0) - new Date(b.due || 0));
+
+  return {
+    lastSession,
+    lastNotesSession,
+    openHomework,
+    empty: !lastSession && openHomework.length === 0,
+  };
 };
 
 export const formatDate = value =>

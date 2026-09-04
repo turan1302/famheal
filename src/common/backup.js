@@ -1,7 +1,8 @@
 import { resolveNotificationSettings } from './notifications';
+import { normalizeHomeworkItem } from './helpers';
 
 export const BACKUP_APP = 'famheal';
-export const BACKUP_VERSION = 1;
+export const BACKUP_VERSION = 2;
 
 const isObject = value => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
@@ -24,9 +25,7 @@ export const createBackupPayload = ({
     clients,
     sessions,
     homework: (Array.isArray(homework) ? homework : []).map(item =>
-      isObject(item)
-        ? { ...item, notes: String(item.notes || '').trim() }
-        : item,
+      isObject(item) ? normalizeHomeworkItem(item) : item,
     ),
     sessionTypes,
     sessionDurations,
@@ -91,10 +90,8 @@ export const parseBackupJson = text => {
     return { ok: false, reason: 'shape' };
   }
 
-  const homeworkWithNotes = homework.map(item =>
-    isObject(item)
-      ? { ...item, notes: String(item.notes || '').trim() }
-      : item,
+  const homeworkWithFields = homework.map(item =>
+    isObject(item) ? normalizeHomeworkItem(item) : item,
   );
 
   return {
@@ -102,7 +99,7 @@ export const parseBackupJson = text => {
     data: {
       clients,
       sessions,
-      homework: homeworkWithNotes,
+      homework: homeworkWithFields,
       sessionTypes,
       sessionDurations,
       notificationSettings: resolveNotificationSettings(data.notificationSettings),

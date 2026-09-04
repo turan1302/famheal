@@ -8,7 +8,7 @@ import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import SearchableSelect from '../../components/SearchableSelect';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
-import { formatDate } from '../../common/helpers';
+import { formatDate, HOMEWORK_PROGRESS_OPTIONS, normalizeHomeworkProgress } from '../../common/helpers';
 
 const NewHomework = () => {
   const colors = useThemeColors();
@@ -41,6 +41,9 @@ const NewHomework = () => {
     existing?.due ? new Date(existing.due) : new Date(),
   );
   const [notes, setNotes] = useState(existing?.notes ?? '');
+  const [progress, setProgress] = useState(
+    normalizeHomeworkProgress(existing?.progress),
+  );
   const [showPicker, setShowPicker] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -87,6 +90,7 @@ const NewHomework = () => {
       sessionId,
       due,
       notes,
+      progress,
     };
 
     if (existing) {
@@ -228,6 +232,32 @@ const NewHomework = () => {
         onClose={() => setShowPicker(false)}
       />
 
+      <Text style={[styles.label, { color: colors.textMuted }]}>Durum</Text>
+      <View style={styles.progressRow}>
+        {HOMEWORK_PROGRESS_OPTIONS.map(item => {
+          const selected = progress === item.key;
+          return (
+            <Pressable
+              key={item.key}
+              onPress={() => setProgress(item.key)}
+              style={[
+                styles.progressChip,
+                { backgroundColor: selected ? colors.selectedBg : colors.card },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.choiceText,
+                  { color: selected ? colors.selectedText : colors.cardText },
+                ]}
+              >
+                {item.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
       <Text style={[styles.label, { color: colors.textMuted }]}>Not</Text>
       <TextInput
         value={notes}
@@ -339,6 +369,17 @@ const styles = StyleSheet.create({
   pickerText: {
     fontSize: 15,
     fontWeight: '600',
+  },
+  progressRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  progressChip: {
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
   },
   notes: {
     minHeight: 88,

@@ -6,6 +6,7 @@ import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
 import DateTimePickerSheet from '../../components/DateTimePickerSheet';
 import SearchableSelect from '../../components/SearchableSelect';
+import SessionPrepCard from '../../components/SessionPrepCard';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
 import {
@@ -13,6 +14,7 @@ import {
   formatDurationLabel,
   formatTime,
   sessionDateTime,
+  buildClientPrepSummary,
 } from '../../common/helpers';
 import { scheduleSessionReminder } from '../../common/notifications';
 
@@ -68,6 +70,16 @@ const NewSession = () => {
   const [pickerMode, setPickerMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const prepSummary = useMemo(
+    () =>
+      buildClientPrepSummary({
+        clientId,
+        sessions,
+        homework,
+        excludeSessionId: existing?.id,
+      }),
+    [clientId, existing?.id, homework, sessions],
+  );
 
   const clientItems = useMemo(
     () =>
@@ -194,6 +206,8 @@ const NewSession = () => {
           emptyLabel="Eşleşen danışan yok"
         />
       )}
+
+      {prepSummary ? <SessionPrepCard summary={prepSummary} /> : null}
 
       <Text style={[styles.label, { color: colors.textMuted }]}>Seans türü</Text>
       {sessionTypes.length === 0 ? (

@@ -10,6 +10,7 @@ const HIDDEN_TAB_ROUTES = new Set([
   'NewSession',
   'NewHomework',
   'Homework',
+  'SessionDetail',
   'SessionTypes',
   'SessionDurations',
   'LegalText',

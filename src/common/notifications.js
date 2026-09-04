@@ -9,6 +9,7 @@ import {
   shiftOutOfQuietHours,
   formatShortDate,
   isClosedSessionStatus,
+  isOpenHomework,
 } from './helpers';
 
 const CHANNEL_ID = 'famheal-sessions';
@@ -164,7 +165,7 @@ export async function scheduleHomeworkReminder(item, settings, options = {}) {
   const skipCancel = Boolean(options.skipCancel);
   const skipSetup = Boolean(options.skipSetup);
   try {
-    if (!prefs.types.homework || !item?.due) {
+    if (!prefs.types.homework || !item?.due || !isOpenHomework(item)) {
       if (!skipCancel) {
         await cancelHomeworkReminder(item.id);
       }

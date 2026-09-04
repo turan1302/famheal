@@ -1,6 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Clients from '../screens/Clients';
 import NewClient from '../screens/NewClient';
+import SessionDetail from '../screens/SessionDetail';
+import NewHomework from '../screens/NewHomework';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,12 @@ const ClientsNavigator = () => {
       <Stack.Screen
         name="NewClient"
         component={NewClient}
+        options={{ animation: 'fade_from_bottom' }}
+      />
+      <Stack.Screen name="SessionDetail" component={SessionDetail} />
+      <Stack.Screen
+        name="NewHomework"
+        component={NewHomework}
         options={{ animation: 'fade_from_bottom' }}
       />
     </Stack.Navigator>

@@ -10,6 +10,7 @@ import {
   formatSessionWhen,
   SESSION_STATUS_OPTIONS,
   withResolvedStatus,
+  homeworkProgressLabel,
 } from '../../common/helpers';
 
 const SessionDetail = () => {
@@ -208,7 +209,8 @@ const SessionDetail = () => {
               {item.title}
             </Text>
             <Text style={[styles.meta, { color: colors.cardTextMuted }]}>
-              Teslim: {formatDate(new Date(item.due))}
+              {homeworkProgressLabel(item.progress)} · Teslim:{' '}
+              {formatDate(new Date(item.due))}
             </Text>
             {item.notes ? (
               <Text

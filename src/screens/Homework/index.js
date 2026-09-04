@@ -7,7 +7,12 @@ import ThemedScreen from '../../components/ThemedScreen';
 import FloatingActionButton from '../../components/FloatingActionButton';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
-import { formatShortDate, homeworkStatus } from '../../common/helpers';
+import {
+  formatShortDate,
+  homeworkStatus,
+  HOMEWORK_PROGRESS_OPTIONS,
+  normalizeHomeworkProgress,
+} from '../../common/helpers';
 
 const FILTERS = {
   today: {
@@ -34,6 +39,7 @@ const Homework = () => {
   const filter = route.params?.filter;
   const homework = useAppStore(state => state.homework);
   const deleteHomework = useAppStore(state => state.deleteHomework);
+  const setHomeworkProgress = useAppStore(state => state.setHomeworkProgress);
   const [pendingDelete, setPendingDelete] = useState(null);
   const meta = FILTERS[filter];
 
@@ -131,6 +137,39 @@ const Homework = () => {
               <Text style={[styles.meta, { color: colors.cardTextMuted }]}>
                 {item.client}  ·  Teslim {formatShortDate(new Date(item.due))}
               </Text>
+              <View style={styles.progressRow}>
+                {HOMEWORK_PROGRESS_OPTIONS.map(option => {
+                  const selected =
+                    normalizeHomeworkProgress(item.progress) === option.key;
+                  return (
+                    <Pressable
+                      key={option.key}
+                      onPress={() => setHomeworkProgress(item.id, option.key)}
+                      style={[
+                        styles.progressChip,
+                        {
+                          backgroundColor: selected
+                            ? colors.selectedBg
+                            : colors.cardMuted,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.progressText,
+                          {
+                            color: selected
+                              ? colors.selectedText
+                              : colors.cardTextMuted,
+                          },
+                        ]}
+                      >
+                        {option.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
               {item.notes ? (
                 <Text
                   style={[styles.notes, { color: colors.cardTextMuted }]}
@@ -216,6 +255,21 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 13,
     fontWeight: '500',
+  },
+  progressRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 10,
+  },
+  progressChip: {
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  progressText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
   notes: {
     fontSize: 13,

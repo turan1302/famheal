@@ -3,8 +3,10 @@ import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import ThemedScreen from '../../components/ThemedScreen';
+import SessionPrepCard from '../../components/SessionPrepCard';
 import { useThemeColors } from '../../theme';
 import { useAppStore } from '../../store/useAppStore';
+import { buildClientPrepSummary } from '../../common/helpers';
 
 const NewClient = () => {
   const colors = useThemeColors();
@@ -122,12 +124,26 @@ const NewClient = () => {
     ? ` Bu danışana ait ${relatedParts.join(' ve ')} kaydı da silinecek.`
     : '';
 
+  const prepSummary = useMemo(
+    () =>
+      existing
+        ? buildClientPrepSummary({
+            clientId: existing.id,
+            sessions,
+            homework,
+          })
+        : null,
+    [existing, homework, sessions],
+  );
+
   return (
     <ThemedScreen
       title={existing ? 'Danışanı Düzenle' : 'Yeni Danışan'}
       showBack
       padTabBar={false}
     >
+      {prepSummary ? <SessionPrepCard summary={prepSummary} /> : null}
+
       <Text style={[styles.label, { color: colors.textMuted }]}>Ad soyad</Text>
         <TextInput
           value={name}
